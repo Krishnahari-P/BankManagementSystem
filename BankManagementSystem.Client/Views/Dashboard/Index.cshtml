@@ -1,0 +1,64 @@
+﻿@model BankManagementSystem.Client.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light border-end">
+            <div class="p-3">
+                <h5 class="fw-bold text-primary mb-4">Navigation</h5>
+                <div class="nav flex-column">
+                    <a class="btn btn-outline-primary mb-2 text-start w-100" asp-controller="Customer" asp-action="Index">Customers</a>
+                    <a class="btn btn-outline-primary mb-2 text-start w-100" asp-controller="Employee" asp-action="Index">Employees</a>
+                    <a class="btn btn-outline-primary mb-2 text-start w-100" asp-controller="BankAccount" asp-action="Index">Accounts</a>
+                    <a class="btn btn-outline-primary mb-2 text-start w-100" asp-controller="AccountType" asp-action="Index">Account Types</a>
+                    <a class="btn btn-outline-primary mb-2 text-start w-100" asp-controller="Transaction" asp-action="Index">Transactions</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="pt-3 pb-2 mb-3 border-bottom">
+                <h2 class="fw-bold text-dark">Bank Management Dashboard</h2>
+                <p class="text-muted">Overview of the system summary</p>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th>Statistic</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-semibold">Total Customers</td>
+                            <td class="text-center">@Model.TotalCustomers</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">Total Employees</td>
+                            <td class="text-center">@Model.TotalEmployees</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">Total Accounts</td>
+                            <td class="text-center">@Model.TotalAccounts</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">Total Account Types</td>
+                            <td class="text-center">@Model.TotalAccountTypes</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">Total Payments</td>
+                            <td class="text-center">@Model.TotalPayments</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>

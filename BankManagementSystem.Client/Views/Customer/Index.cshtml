@@ -1,0 +1,215 @@
+﻿@* @model IEnumerable<BankManagementSystem.Client.Dto.CustomerResponse>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Occupation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApprovedByUserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApprovalDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AadharNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PAN)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerImageURL)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Occupation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApprovedByUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApprovalDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AadharNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PAN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerImageURL)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.CustomerId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.CustomerId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.CustomerId })
+            </td>
+        </tr>
+}
+    </tbody>
+</table> *@
+@model IEnumerable<BankManagementSystem.Client.Dto.CustomerResponse>
+
+@{
+    ViewData["Title"] = "Customer List";
+}
+
+<div class="container mt-4">
+    <h2 class="fw-bold text-primary mb-3">Customer Management</h2>
+
+    <!-- ✅ Search Bar -->
+    <form asp-action="List" method="get" class="row g-2 mb-4">
+        <div class="col-md-3">
+            <input type="text" name="name" class="form-control" placeholder="Search by Name" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="aadharNumber" class="form-control" placeholder="Search by Aadhar" />
+        </div>      
+        <div class="col-md-2">
+            <select name="status" class="form-select">
+                <option value="">-- Status --</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Active">Active</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="phone" class="form-control" placeholder="Search by Phone" />
+        </div>
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Search
+            </button>
+        </div>
+    </form>
+
+    <!-- ✅ Customer Table -->
+    <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-primary text-center">
+            <tr>
+                <th>Customer Name</th>
+                <th>Date of Birth</th>
+                <th>Occupation</th>
+                <th>Phone</th>
+                <th>Aadhar</th>
+                <th>PAN</th>
+                <th>Status</th>
+                <th>Approval Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.CustomerName</td>
+                        <td>@item.DateOfBirth?.ToString("dd-MM-yyyy")</td>
+                        <td>@item.Occupation</td>
+                        <td>@item.Phone</td>
+                        <td>@item.AadharNumber</td>
+                        <td>@item.PAN</td>
+                        <td>
+                            @if (item.Status == "Pending")
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                            else if (item.Status == "Approved")
+                            {
+                                <span class="badge bg-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@item.Status</span>
+                            }
+                        </td>
+                        <td>@(item.ApprovalDate?.ToString("dd-MM-yyyy") ?? "-")</td>
+
+                        <td>
+                            <!-- ✅ Approve Button (if pending) -->
+                            @if (item.Status == "Pending")
+                            {
+                                <form asp-controller="Administrative" asp-action="ApproveCustomer" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.CustomerId" />
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="bi bi-check-circle me-1"></i> Approve
+                                    </button>
+                                </form>
+                            }
+
+                            <!-- ✅ Create Login (if approved & no user) -->
+                            @if (item.Status == "Approved" && string.IsNullOrEmpty(item.ApplicationUserID))
+                            {
+                                <form asp-controller="Administrative" asp-action="CreateCustomerAccount" method="post" class="mt-2">
+                                    <input type="hidden" name="customerId" value="@item.CustomerId" />
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="text" name="username" placeholder="Username" required class="form-control form-control-sm w-auto" />
+                                        <input type="password" name="password" placeholder="Password" required class="form-control form-control-sm w-auto" />
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="bi bi-person-check me-1"></i> Create Login
+                                        </button>
+                                    </div>
+                                </form>
+                            }
+
+                            <!-- ✅ Default CRUD buttons -->
+                            <div class="mt-2">
+                                <a asp-action="Edit" asp-route-id="@item.CustomerId" class="btn btn-outline-success btn-sm me-1">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.CustomerId" class="btn btn-outline-info btn-sm me-1">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.CustomerId" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="9" class="text-center text-muted">No customers found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
