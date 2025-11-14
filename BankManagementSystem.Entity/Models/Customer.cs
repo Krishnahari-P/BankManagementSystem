@@ -28,6 +28,7 @@ namespace BankManagementSystem.Entity.Models
         [Required]
         public String? Phone {  get; set; }
         public String? ApprovedByUserId { get; set; }
+        public String? ApprovedByName { get; set; }
         [DataType(DataType.Date)]
         public DateTime? ApprovalDate {  get; set; }
         [StringLength(12)]

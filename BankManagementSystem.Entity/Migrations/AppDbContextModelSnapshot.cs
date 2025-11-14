@@ -59,13 +59,14 @@ namespace BankManagementSystem.Entity.Migrations
                     b.HasKey("AccountId");
 
                     b.HasIndex("AccountNumber")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[AccountNumber] IS NOT NULL");
 
                     b.HasIndex("AccountTypeId");
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Account");
+                    b.ToTable("Account", (string)null);
                 });
 
             modelBuilder.Entity("BankManagementSystem.Entity.Models.AccountType", b =>
@@ -95,7 +96,7 @@ namespace BankManagementSystem.Entity.Migrations
                     b.HasIndex("TypeName")
                         .IsUnique();
 
-                    b.ToTable("AccountType");
+                    b.ToTable("AccountType", (string)null);
                 });
 
             modelBuilder.Entity("BankManagementSystem.Entity.Models.Customer", b =>
@@ -167,7 +168,7 @@ namespace BankManagementSystem.Entity.Migrations
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customer", (string)null);
                 });
 
             modelBuilder.Entity("BankManagementSystem.Entity.Models.Employee", b =>
@@ -216,7 +217,7 @@ namespace BankManagementSystem.Entity.Migrations
                     b.HasIndex("StaffCode")
                         .IsUnique();
 
-                    b.ToTable("Employee");
+                    b.ToTable("Employee", (string)null);
                 });
 
             modelBuilder.Entity("BankManagementSystem.Entity.Models.Transaction", b =>
@@ -268,7 +269,7 @@ namespace BankManagementSystem.Entity.Migrations
 
                     b.HasIndex("RecipientAccountId");
 
-                    b.ToTable("Transaction");
+                    b.ToTable("Transaction", (string)null);
                 });
 
             modelBuilder.Entity("BankManagementSystem.Entity.Security.ApplicationUser", b =>
@@ -348,16 +349,16 @@ namespace BankManagementSystem.Entity.Migrations
                         {
                             Id = "2b9d215a-65b4-44b7-872e-a5780fb66fd6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3c225a71-2b98-474a-902b-5de8b2e29f06",
+                            ConcurrencyStamp = "6bdbc4d7-b76b-40ef-b1b0-91b8027631ab",
                             Email = "admin@email.com",
                             EmailConfirmed = false,
                             IsActive = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EMAIL.COM",
                             NormalizedUserName = "ADMIN@EMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMKMq3VKO9d6v6e10Vo8YgfQ5txDJHQvSEdJEHZnEnXpHHQHv89p0jdT8SH9cnzeWg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAHw/oK6WY6V0aGcq4U326BiOBYpcwenaG+IjOQ0F3eK6MSuNemGeAW7p38H/79Iiw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "27607927-1f4c-44d9-b0bf-04a53d662a73",
+                            SecurityStamp = "df1b969d-a38c-4a30-ad4b-382332d39c0c",
                             Status = "Approved",
                             TwoFactorEnabled = false,
                             UserName = "admin@email.com"
@@ -396,6 +397,12 @@ namespace BankManagementSystem.Entity.Migrations
                             Id = "46b36bf0-15ee-4631-aa11-8a7007aca77c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2f76f0c3-4bfa-4e60-aca6-82c3cd7d22bb",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
                         });
                 });
 

@@ -1,58 +1,67 @@
-﻿@model BankManagementSystem.Client.Dto.AccountResponse
+﻿@model BankManagementSystem.Client.Dto.AccountRequest
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Request New Account";
 }
 
-<h1>Create</h1>
+<div class="container mt-4">
+    <h3 class="fw-bold text-primary mb-4">Request a New Account</h3>
 
-<h4>AccountResponse</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="AccountNumber" class="control-label"></label>
-                <input asp-for="AccountNumber" class="form-control" />
-                <span asp-validation-for="AccountNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerId" class="control-label"></label>
-                <input asp-for="CustomerId" class="form-control" />
-                <span asp-validation-for="CustomerId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AccountTypeId" class="control-label"></label>
-                <input asp-for="AccountTypeId" class="form-control" />
-                <span asp-validation-for="AccountTypeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Balance" class="control-label"></label>
-                <input asp-for="Balance" class="form-control" />
-                <span asp-validation-for="Balance" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label"></label>
-                <input asp-for="CreatedDate" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    <form id="accountForm">
+        <div class="mb-3">
+            <label class="form-label">Account Type</label>
+            <select id="AccountTypeId" name="AccountTypeId" class="form-select" required>
+                <option value="">-- Select Type --</option>
+                <option value="1">Savings</option>
+                <option value="2">Current</option>
+                <option value="3">Fixed Deposit</option>
+            </select>
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="mb-3">
+            <label class="form-label">Initial Deposit</label>
+            <input type="number" id="InitialDeposit" name="InitialDeposit" class="form-control" required min="0" />
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Submit Request</button>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+
+            $("#AccountTypeId").on("change", function () {
+                const selected = $(this).val();
+                if (selected == "3") {
+                    $("#InitialDeposit").val("3000").prop("readonly", true);
+                } else {
+                    $("#InitialDeposit").val("").prop("readonly", false);
+                }
+            });
+
+            $("#accountForm").on("submit", function (e) {
+                e.preventDefault();
+
+                const data = {
+                    AccountTypeId: parseInt($("#AccountTypeId").val()),
+                    InitialDeposit: parseFloat($("#InitialDeposit").val())
+                };
+
+                $.ajax({
+                    url: "/BankAccount/RequestAccount",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (res) {
+                        alert(res.message || "Account request submitted successfully!");
+                        window.location.href = "/Dashboard/Index";
+                    },
+                    error: function (xhr) {
+                        alert(xhr.responseText || "Error submitting request.");
+                    }
+                });
+            });
+        });
+    </script>
 }

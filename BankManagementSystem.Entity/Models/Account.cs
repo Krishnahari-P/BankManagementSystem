@@ -15,7 +15,7 @@ namespace BankManagementSystem.Entity.Models
         public int AccountId { get; set; }
         [Required]
         [StringLength(20)]
-        public String AccountNumber { get; set; }
+        public String? AccountNumber { get; set; }
         [Required]
         public int CustomerId { get; set; }
         [Required]

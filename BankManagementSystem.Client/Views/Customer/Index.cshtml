@@ -1,102 +1,42 @@
-﻿@* @model IEnumerable<BankManagementSystem.Client.Dto.CustomerResponse>
-
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfBirth)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Occupation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApprovedByUserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApprovalDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AadharNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PAN)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerImageURL)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfBirth)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Occupation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApprovedByUserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApprovalDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AadharNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PAN)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerImageURL)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.CustomerId }) |
-                @Html.ActionLink("Details", "Details", new { id = item.CustomerId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.CustomerId })
-            </td>
-        </tr>
-}
-    </tbody>
-</table> *@
-@model IEnumerable<BankManagementSystem.Client.Dto.CustomerResponse>
+﻿@model IEnumerable<BankManagementSystem.Client.Dto.CustomerResponse>
 
 @{
     ViewData["Title"] = "Customer List";
 }
 
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Details of Student</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modalContent">
+                Modal body..
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <div class="container mt-4">
     <h2 class="fw-bold text-primary mb-3">Customer Management</h2>
 
-    <!-- ✅ Search Bar -->
     <form asp-action="List" method="get" class="row g-2 mb-4">
         <div class="col-md-3">
-            <input type="text" name="name" class="form-control" placeholder="Search by Name" />
+            <input type="text" name="customerName" class="form-control" placeholder="Search by Name" />
         </div>
         <div class="col-md-3">
-            <input type="text" name="aadharNumber" class="form-control" placeholder="Search by Aadhar" />
+            <input type="text" name="aadhar" class="form-control" placeholder="Search by Aadhar" />
         </div>      
         <div class="col-md-2">
             <select name="status" class="form-select">
@@ -116,11 +56,10 @@
             </button>
         </div>
     </form>
-
-    <!-- ✅ Customer Table -->
     <table class="table table-bordered table-striped table-hover align-middle">
         <thead class="table-primary text-center">
             <tr>
+                <th>Customer Id</th>
                 <th>Customer Name</th>
                 <th>Date of Birth</th>
                 <th>Occupation</th>
@@ -138,6 +77,7 @@
                 foreach (var item in Model)
                 {
                     <tr>
+                        <td>@item.CustomerId</td>
                         <td>@item.CustomerName</td>
                         <td>@item.DateOfBirth?.ToString("dd-MM-yyyy")</td>
                         <td>@item.Occupation</td>
@@ -161,43 +101,27 @@
                         <td>@(item.ApprovalDate?.ToString("dd-MM-yyyy") ?? "-")</td>
 
                         <td>
-                            <!-- ✅ Approve Button (if pending) -->
                             @if (item.Status == "Pending")
                             {
-                                <form asp-controller="Administrative" asp-action="ApproveCustomer" method="post" style="display:inline;">
-                                    <input type="hidden" name="id" value="@item.CustomerId" />
+                                <form class="approve-form" data-id="@item.CustomerId" style="display:inline;">
                                     <button type="submit" class="btn btn-sm btn-success">
                                         <i class="bi bi-check-circle me-1"></i> Approve
                                     </button>
                                 </form>
-                            }
-
-                            <!-- ✅ Create Login (if approved & no user) -->
-                            @if (item.Status == "Approved" && string.IsNullOrEmpty(item.ApplicationUserID))
-                            {
-                                <form asp-controller="Administrative" asp-action="CreateCustomerAccount" method="post" class="mt-2">
-                                    <input type="hidden" name="customerId" value="@item.CustomerId" />
-                                    <div class="d-flex align-items-center gap-2">
-                                        <input type="text" name="username" placeholder="Username" required class="form-control form-control-sm w-auto" />
-                                        <input type="password" name="password" placeholder="Password" required class="form-control form-control-sm w-auto" />
-                                        <button type="submit" class="btn btn-primary btn-sm">
-                                            <i class="bi bi-person-check me-1"></i> Create Login
-                                        </button>
-                                    </div>
+                                <form class="reject-form" data-id="@item.CustomerId" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-x-circle me-1"></i> Reject
+                                    </button>
                                 </form>
-                            }
 
-                            <!-- ✅ Default CRUD buttons -->
+                            }           
                             <div class="mt-2">
                                 <a asp-action="Edit" asp-route-id="@item.CustomerId" class="btn btn-outline-success btn-sm me-1">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                                 <a asp-action="Details" asp-route-id="@item.CustomerId" class="btn btn-outline-info btn-sm me-1">
                                     <i class="bi bi-info-circle"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.CustomerId" class="btn btn-outline-danger btn-sm">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                </a>                             
                             </div>
                         </td>
                     </tr>
@@ -212,4 +136,70 @@
         </tbody>
     </table>
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".approve-form").on("submit", function (e) {
+                e.preventDefault();
+                var customerId = $(this).data("id");
+
+                $.ajax({
+                    url: `/Administrative/ApproveCustomer?id=${customerId}`,
+                    type: "POST",
+                    success: function (data) {
+                        $("#myModal .modal-title").text("Customer Account Created");
+                        $("#modalContent").html(`
+                            <p><strong>Username:</strong> ${data.Username}</p>
+                            <p><strong>Temporary Password:</strong> ${data.TemporaryPassword}</p>
+                            <p class="text-success fw-bold">Please note these credentials for customer login.</p>
+                        `);
+                        $("#myModal").on("hidden.bs.modal", function () {
+                            location.reload();
+                        });
+                        $("#myModal").modal("show");
+                    },
+                    error: function () {
+                        $("#myModal .modal-title").text("Error");
+                        $("#modalContent").html(`
+                            <p class="text-danger">Error approving customer or creating account.</p>
+                        `);
+                        $("#myModal").modal("show");
+                    }
+                });
+            });
+
+            $(".reject-form").on("submit", function (e) {
+                e.preventDefault();
+                var customerId = $(this).data("id");
+
+                if (!confirm("Are you sure you want to reject this customer?")) return;
+
+                $.ajax({
+                    url: `/Administrative/RejectCustomer?id=${customerId}`,
+                    type: "POST",
+                    success: function () {
+                        $("#myModal .modal-title").text("Customer Rejected");
+                        $("#modalContent").html(`
+                            <p class="text-danger fw-bold">Customer has been rejected successfully.</p>
+                        `);
+                        $("#myModal").on("hidden.bs.modal", function () {
+                            location.reload();
+                        });
+                        $("#myModal").modal("show");
+                    },
+                    error: function () {
+                        $("#myModal .modal-title").text("Error");
+                        $("#modalContent").html(`
+                            <p class="text-danger">Error rejecting customer.</p>
+                        `);
+                        $("#myModal").modal("show");
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
+
 

@@ -29,6 +29,7 @@ namespace BankManagementSystem.Controllers
             {
                 return NotFound();
             }
+
             return Ok(customers);
         }
 
@@ -43,7 +44,7 @@ namespace BankManagementSystem.Controllers
             return Ok(customer);
         }
         [HttpGet("GetCustomerBySearch")]
-        public async Task<IActionResult> GetCustomerBySearch(string customerName, string aadhar, string status, string phone)
+        public async Task<IActionResult> GetCustomerBySearch(string? customerName, string? aadhar, string? status, string? phone)
         {
             var customer = await _customerRepository.GetCustomerBySearchAsync(customerName,aadhar,status,phone);
             if (customer == null)
@@ -80,6 +81,16 @@ namespace BankManagementSystem.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            var existingCustomer = await _customerRepository.GetExistingCustomerAsync(model.AadharNumber, model.PAN, model.Phone);
+            if (existingCustomer != null)
+            {
+                return BadRequest(new
+                {
+                    Message = "A customer with the same Aadhar, PAN, or Phone number already exists.",
+                    ExistingCustomerId = existingCustomer.CustomerId
+                });
+            }
 
             var customer = new Customer
             {

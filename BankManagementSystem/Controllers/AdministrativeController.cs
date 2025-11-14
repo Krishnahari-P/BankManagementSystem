@@ -1,8 +1,12 @@
-﻿using BankManagementSystem.Entity.Security;
+﻿using BankManagementSystem.Entity.Dto;
+using BankManagementSystem.Entity.Migrations;
+using BankManagementSystem.Entity.Models;
+using BankManagementSystem.Entity.Security;
 using BankManagementSystem.Services.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,7 +14,7 @@ namespace BankManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public class AdministrativeController : ControllerBase
     {
         private readonly ICustomerRepository _customerRepository;
@@ -18,14 +22,16 @@ namespace BankManagementSystem.Controllers
         private readonly IAccountTypeRepository _accountTypeRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IEmployeeRepository _employeeRepository;
 
-        public AdministrativeController(ICustomerRepository customerRepository,UserManager<ApplicationUser> userManager,IAccountTypeRepository accountTypeRepository,IAccountRepository accountRepository,ITransactionRepository transactionRepository)
+        public AdministrativeController(ICustomerRepository customerRepository,UserManager<ApplicationUser> userManager,IAccountTypeRepository accountTypeRepository,IAccountRepository accountRepository,ITransactionRepository transactionRepository,IEmployeeRepository employeeRepository)
         {
             _customerRepository = customerRepository;
             _userManager = userManager;
             _accountTypeRepository = accountTypeRepository;
             _accountRepository = accountRepository;
             _transactionRepository = transactionRepository;
+            _employeeRepository = employeeRepository;
         }
         #region Customer creation handling
         [HttpPut("ApproveCustomer")]
@@ -37,7 +43,8 @@ namespace BankManagementSystem.Controllers
                 return NotFound("Customer not found");
             }
             customer.Status = "Approved";
-            customer.ApprovalDate = DateTime.Now;
+            customer.ApprovalDate = DateTime.Now.Date;
+            //customer.ApprovedByUserId = User.FindFirst("UserId")?.Value;
             await _customerRepository.UpdateCustomerAsync(customer);
 
             return Ok(new { Message = "Customer approved successfully." });
@@ -85,6 +92,12 @@ namespace BankManagementSystem.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
+            var roleResult = await _userManager.AddToRoleAsync(user, "Customer");
+            if (!roleResult.Succeeded)
+            {
+                return BadRequest(roleResult.Errors);
+            }
+
             customer.ApplicationUserID = user.Id;
             await _customerRepository.UpdateCustomerAsync(customer);
 
@@ -106,7 +119,7 @@ namespace BankManagementSystem.Controllers
             account.Status = "Active";
             await _accountRepository.UpdateAccountAsync(account);
 
-            return Ok(new { Message = "Account approved successfully.", AccountNumber = account.AccountNumber });
+            return Ok(new { message = "Account approved successfully.", accountNumber = account.AccountNumber });
         }
 
         [HttpPut("RejectAccount")]
@@ -205,6 +218,59 @@ namespace BankManagementSystem.Controllers
 
             return Ok(new { Message = "Transaction rejected successfully." });
         }
+        #endregion
+
+        #region AddEmployee
+
+        [HttpPost("AddEmployee")]
+        public async Task<IActionResult> AddEmployee([FromBody] EmployeeRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var nextId = (await _employeeRepository.GetAllEmployeesAsync()).Count + 1;
+            string staffCode = $"EMP{nextId:D3}";
+
+            string username = $"{request.EmployeeName}@bank.com";
+            string password = $"{request.EmployeeName}@123";
+
+            var user = new ApplicationUser
+            {
+                UserName = username,
+                Email = username,
+                Status = "Approved",
+                IsActive = true
+            };
+
+            var result = await _userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            var roleResult = await _userManager.AddToRoleAsync(user, "Manager");
+            if (!roleResult.Succeeded)
+                return BadRequest(roleResult.Errors);
+
+            var employee = new Employee
+            {
+                ApplicationUserID = user.Id,
+                StaffCode = staffCode,
+                EmployeeName = request.EmployeeName,
+                Phone = request.Phone,
+                JobTitle = request.JobTitle,
+                HiredDate = DateTime.Now.Date
+            };
+
+            await _employeeRepository.AddEmployeeAsync(employee);
+
+            return Ok(new
+            {
+                Message = "Employee added successfully.",
+                Username = username,
+                TemporaryPassword = password,
+                StaffCode = staffCode
+            });
+        }
+
         #endregion
     }
 }

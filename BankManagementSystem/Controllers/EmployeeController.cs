@@ -30,6 +30,17 @@ namespace BankManagementSystem.Controllers
             return Ok(employees);
         }
 
+        [HttpGet("GetAllEmployeesBySearch")]
+        public async Task<IActionResult> GetAllEmployeesBySearch(string? name,string? phone)
+        {
+            var employees = await _employeeRepository.GetAllEmployeesBySearchAsync(name,phone);
+            if (employees == null)
+            {
+                return NotFound();
+            }
+            return Ok(employees);
+        }
+
         [HttpGet("GetEmployeeById")]
         public async Task<IActionResult> GetEmployeeById(int id)
         {
@@ -41,12 +52,12 @@ namespace BankManagementSystem.Controllers
             return Ok(employee);
         }
 
-        [HttpPost("AddEmployee")]
-        public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
-        {
-            await _employeeRepository.AddEmployeeAsync(employee);
-            return Ok();
-        }
+        //[HttpPost("AddEmployee")]
+        //public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
+        //{
+        //    await _employeeRepository.AddEmployeeAsync(employee);
+        //    return Ok();
+        //}
 
         [HttpPut("UpdateEmployee")]
         public async Task<IActionResult> UpdateEmployee([FromBody] Employee employee)

@@ -36,6 +36,20 @@ namespace BankManagementSystem.Services.Repository
             return employeeList;
         }
 
+        public async Task<List<Employee>> GetAllEmployeesBySearchAsync(string? name, string? phone)
+        {
+            var query=_context.EmployeeSet.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(x => x.EmployeeName.Contains(name));
+            }
+            if (!string.IsNullOrWhiteSpace(phone))
+            {
+                query = query.Where(x => x.Phone.Contains(phone));
+            }
+            return await query.ToListAsync();
+        }
+
         public async Task<Employee> GetEmployeeByIdAsync(int id)
         {
             var employee = await _context.EmployeeSet.FindAsync(id);

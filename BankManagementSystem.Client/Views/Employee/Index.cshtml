@@ -1,71 +1,73 @@
 ﻿@model IEnumerable<BankManagementSystem.Client.Dto.EmployeeResponse>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Employee Management";
 }
 
-<h1>Index</h1>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold text-primary">
+            <i class="fa-solid fa-user-tie me-2"></i> Employee Management
+        </h2>
+        <a asp-controller="Administrative" asp-action="CreateEmployee" class="btn btn-success">
+            <i class="fa-solid fa-user-plus"></i> Add Employee
+        </a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.EmployeeId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApplicationUserID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StaffCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EmployeeName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.JobTitle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HiredDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.EmployeeId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApplicationUserID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StaffCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EmployeeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.JobTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HiredDate)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.EmployeeId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.EmployeeId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.EmployeeId })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <form asp-action="List" method="get" class="row g-2 mb-4">
+        <div class="col-md-3">
+            <input type="text" name="name" class="form-control" placeholder="Search by name" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="phone" class="form-control" placeholder="Search by phone" />
+        </div>
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Search
+            </button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-hover align-middle shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Employee ID</th>
+                <th>Staff Code</th>
+                <th>Employee Name</th>
+                <th>Phone</th>
+                <th>Job Title</th>
+                <th>Hired Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.EmployeeId</td>
+                        <td>@item.StaffCode</td>
+                        <td>@item.EmployeeName</td>
+                        <td>@item.Phone</td>
+                        <td>@item.JobTitle</td>
+                        <td>@item.HiredDate.ToShortDateString()</td>
+                        <td>
+                            <span class="badge bg-success">
+                                <i class="fa-solid fa-circle-check"></i> Active
+                            </span>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center text-muted">
+                        <i class="fa-solid fa-info-circle"></i> No employees found.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

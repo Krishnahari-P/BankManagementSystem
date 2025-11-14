@@ -33,19 +33,38 @@ namespace BankManagementSystem.Services.Repository
 
         public async Task<List<Customer>> GetAllCustomersAsync()
         {
-            var customerList = await _context.CustomerSet.ToListAsync();
+            var customerList = await _context.CustomerSet.ToListAsync();         
             return customerList;
         }
 
         public async Task<Customer> GetCustomerByIdAsync(int id)
         {
             var customer = await _context.CustomerSet.FindAsync(id);
-            return customer ?? throw new NotImplementedException();
+            //return customer ?? throw new NotImplementedException();
+            if (customer == null)
+                return null;
+            return customer;
+
         }
 
-        public async Task<List<Customer>> GetCustomerBySearchAsync(string customerName, string aadhar, string status, string phone)
+        public async Task<Customer?> GetCustomerByUserIdAsync(string userId)
         {
-            var query = from customer in _context.CustomerSet select customer;
+            return await _context.CustomerSet.FirstOrDefaultAsync(c => c.ApplicationUserID == userId);
+        }
+
+
+        public async Task<Customer?> GetExistingCustomerAsync(string aadhar, string? pan, string phone)
+        {
+            return await _context.CustomerSet
+                .FirstOrDefaultAsync(c =>
+                    c.AadharNumber == aadhar ||
+                    c.PAN == pan ||
+                    c.Phone == phone);
+        }
+
+        public async Task<List<Customer>> GetCustomerBySearchAsync(string? customerName, string? aadhar, string? status, string? phone)
+        {
+            var query = _context.CustomerSet.AsQueryable();
             if (!string.IsNullOrWhiteSpace(customerName))
             {
                 query = query.Where(x => x.CustomerName.Contains(customerName));
@@ -62,8 +81,7 @@ namespace BankManagementSystem.Services.Repository
             {
                 query = query.Where(x => x.Phone.Contains(phone));
             }
-            var customers = await query.ToListAsync();
-            return customers;
+            return await query.ToListAsync();
         }
         public async Task UpdateCustomerAsync(Customer customer)
         {

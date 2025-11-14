@@ -1,0 +1,231 @@
+﻿@* @model IEnumerable<BankManagementSystem.Client.Dto.AccountResponse>
+
+@{
+    ViewData["Title"] = "Deposit Money";
+}
+<div class="container mt-4">
+    <h2 class="fw-bold text-primary mb-4">Deposit to Account</h2>
+    <form asp-action="Deposit" method="post" class="card p-4 shadow-sm border-0">
+        <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Select Account</label>
+            <select class="form-select" name="AccountId" required>
+                <option value="">-- Select Account --</option>
+                @foreach (var acc in Model)
+                {
+                    if (acc.Status == "Pending")
+                    {
+                        continue;
+                    }
+                    string typeName = acc.AccountTypeId switch
+                    {
+                        1 => "Savings",
+                        2 => "Current",
+                        3 => "Fixed Deposit",
+                        _ => "Unknown"
+                    };
+
+                    <option value="@acc.AccountId">
+                        @(acc.AccountNumber ?? "N/A") (@typeName) -
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        @(acc.Balance.ToString("0.00") ?? "0.00")
+                    </option>
+                }
+            </select>
+
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Amount</label>
+            <input type="number" step="0.01" name="Amount" class="form-control" placeholder="Enter amount" required />
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Description</label>
+            <input type="text" name="Description" class="form-control" placeholder="Optional" />
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-cash-stack"></i> Submit Deposit
+        </button>
+    </form>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+} *@
+@* @model IEnumerable<BankManagementSystem.Client.Dto.AccountResponse>
+
+@{
+    ViewData["Title"] = "Deposit Money";
+}
+
+<div class="container mt-4">
+    <h2 class="fw-bold text-primary mb-4">
+        <i class="fa-solid fa-building-columns"></i> Deposit to Account
+    </h2>
+
+    <form asp-action="Deposit" method="post" id="depositForm" class="card p-4 shadow-sm border-0">
+        <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Select Account</label>
+            <select class="form-select" id="accountSelect" name="AccountId" required>
+                <option value="" data-balance="0">-- Select Account --</option>
+                @foreach (var acc in Model)
+                {
+                    if (acc.Status == "Pending")
+                    {
+                        continue;
+                    }
+
+                    string typeName = acc.AccountTypeId switch
+                    {
+                        1 => "Savings",
+                        2 => "Current",
+                        3 => "Fixed Deposit",
+                        _ => "Unknown"
+                    };
+
+                    <option value="@acc.AccountId" data-balance="@acc.Balance">
+                        @(acc.AccountNumber ?? "N/A") (@typeName) -
+                        <i class="fa-solid fa-indian-rupee-sign"></i>@acc.Balance.ToString("0.00")
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Amount</label>
+            <input type="number" step="0.01" id="amountInput" name="Amount" class="form-control" placeholder="Enter amount" required />
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Description</label>
+            <input type="text" name="Description" class="form-control" placeholder="Optional" />
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-cash-stack"></i> Submit Deposit
+        </button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#depositForm").on("submit", function (e) {
+                const selectedOption = $("#accountSelect option:selected");
+                const amount = parseFloat($("#amountInput").val()) || 0;
+
+                if (!selectedOption.val()) {
+                    alert("Please select an account before proceeding.");
+                    e.preventDefault();
+                    return;
+                }
+
+                if (amount <= 0) {
+                    alert("Please enter a valid deposit amount greater than zero.");
+                    e.preventDefault();
+                    return;
+                }
+
+                // Optional: limit very large deposits (business rule)
+                if (amount > 1000000) {
+                    if (!confirm("You are depositing a large amount (₹" + amount.toFixed(2) + "). Are you sure?")) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    </script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+} *@
+@model IEnumerable<BankManagementSystem.Client.Dto.AccountResponse>
+
+@{
+    ViewData["Title"] = "Deposit Money";
+}
+
+<div class="container mt-4">
+    <h2 class="fw-bold text-primary mb-4">
+        <i class="fa-solid fa-building-columns"></i> Deposit to Account
+    </h2>
+
+    <form asp-action="Deposit" method="post" id="depositForm" class="card p-4 shadow-sm border-0">
+        <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Select Account</label>
+            <select class="form-select" id="accountSelect" name="AccountId" required>
+                <option value="" data-status="None" data-balance="0">-- Select Account --</option>
+
+                @foreach (var acc in Model)
+                {
+                    if (acc.Status == "Pending" || acc.Status == "Rejected")
+                    {
+                        continue;
+                    }
+
+                    string typeName = acc.AccountTypeId switch
+                    {
+                        1 => "Savings",
+                        2 => "Current",
+                        3 => "Fixed Deposit",
+                        _ => "Unknown"
+                    };
+
+                    <option value="@acc.AccountId"
+                            data-balance="@acc.Balance"
+                            data-status="@acc.Status">
+                        @(acc.AccountNumber ?? "N/A") (@typeName) - ₹@acc.Balance.ToString("0.00")
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Amount</label>
+            <input type="number" step="0.01" id="amountInput" name="Amount" class="form-control" placeholder="Enter amount" required />
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label fw-semibold">Description</label>
+            <input type="text" name="Description" class="form-control" placeholder="Optional" />
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-cash-stack"></i> Submit Deposit
+        </button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#depositForm").on("submit", function (e) {
+                const selectedOption = $("#accountSelect option:selected");
+                const amount = parseFloat($("#amountInput").val()) || 0;
+
+                if (!selectedOption.val()) {
+                    alert("Please select an account before proceeding.");
+                    e.preventDefault();
+                    return;
+                }
+
+                if (amount <= 0) {
+                    alert("Please enter a valid deposit amount greater than zero.");
+                    e.preventDefault();
+                    return;
+                }
+
+                if (amount > 1000000) {
+                    if (!confirm(`You are depositing a large amount (₹${amount.toFixed(2)}). Are you sure?`)) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    </script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
+

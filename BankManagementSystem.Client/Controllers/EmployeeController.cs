@@ -2,15 +2,19 @@
 using BankManagementSystem.Client.HttpClients;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 
 namespace BankManagementSystem.Client.Controllers
 {
     public class EmployeeController : Controller
     {
         private readonly IGenericHttpClient _client;
-        public EmployeeController(IGenericHttpClient client)
+        private readonly IToastNotification _nToastNotify;
+
+        public EmployeeController(IGenericHttpClient client,IToastNotification nToastNotify)
         {
             _client = client;
+            _nToastNotify = nToastNotify;
         }
 
         public async Task<ActionResult> Index()
@@ -20,6 +24,22 @@ namespace BankManagementSystem.Client.Controllers
             return View(employees);
         }
 
+        public async Task<ActionResult> List(string? name, string? phone)
+        {
+            List<EmployeeResponse> employees = new();
+
+            try
+            {
+                var queryParams = $"?name={name}&phone={phone}";
+                employees = await _client.GetAsync<List<EmployeeResponse>>($"{ApiConstant.GetAllEmployeesBySearch}{queryParams}");
+            }
+            catch
+            {
+                _nToastNotify.AddErrorToastMessage("Fetching failed");
+            }
+
+            return View("Index", employees);
+        }
         public async Task<ActionResult> Details(int id)
         {
             EmployeeResponse employee = new EmployeeResponse();

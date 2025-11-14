@@ -105,5 +105,37 @@ namespace BankManagementSystem.Controllers
             return Ok(new { Message = "Account request submitted. Await manager approval." });
         }
         #endregion
+        #region GetAccountByCustomerId
+        [HttpGet("GetByCustomer")]
+        public async Task<IActionResult> GetByCustomer(int customerId)
+        {
+            var accounts = await _accountRepository.GetAccountsByCustomerIdAsync(customerId);
+            if (accounts == null || !accounts.Any())
+                return NotFound("No accounts found for this customer.");
+
+            var result = accounts.Select(a => new
+            {
+                a.AccountId,
+                a.AccountNumber,
+                a.AccountTypeId,
+                AccountType = a.AccountTypeSet.TypeName,
+                a.Balance,
+                a.Status,
+                CreatedDate = a.CreatedDate.ToString("yyyy-MM-dd")
+            });
+
+            return Ok(result);
+        }
+        #endregion
+        #region GetAccountByAccountNumber
+        [HttpGet("GetAccountByAccountNumber")]
+        public async Task<IActionResult> GetAccountByAccountNumber(string accountNumber)
+        {
+            var account = await _accountRepository.GetAccountByAccountNumberAsync(accountNumber);
+            if (account == null)
+                return NotFound("No account found for this account number");
+            return Ok(account);
+        }
+        #endregion
     }
 }

@@ -3,42 +3,21 @@
 @{
     ViewData["Title"] = "List";
 }
-@section Styles{
-    <link href="~/datatables/css/jquery.datatables.min.css" rel="stylesheet" />
-}
 
 <h1>List</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-
-<div class="modal" id="myModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Details of Student</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body" id="modalContent">
-                Modal body..
-            </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-
-        </div>
-    </div>
-</div>
-<table id="customerTable" class="table table-striped table-bordered">
+<table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicationUserID)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.CustomerName)
             </th>
@@ -64,117 +43,59 @@
                 @Html.DisplayNameFor(model => model.PAN)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.CustomerImageURL)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApplicationUserID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Occupation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApprovedByUserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApprovalDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AadharNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PAN)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerImageURL)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
     </tbody>
 </table>
-
-@* @section Scripts {
-    <script src="~/datatables/js/jquery.datatables.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#customerTable').DataTable({
-                "ajax": {
-                    "url": '@Url.Action("ListJson", "Customer")',
-                    "type": "GET",
-                    "datatype": "json"
-                },
-                "columns": [
-                    { "data": "customerName", "autoWidth": true },
-                    { "data": "dateOfBirth", "autoWidth": true },
-                    { "data": "occupation", "autoWidth": true },
-                    { "data": "phone", "autoWidth": true },
-                    { "data": "approvedByUserId", "autoWidth": true },
-                    { "data": "approvalDate", "autoWidth": true },
-                    { "data": "aadharNumber", "autoWidth": true },
-                    { "data": "pan", "autoWidth": true },
-                    { "data": "status", "autoWidth": true },
-                    {
-                        "data": "customerId",
-                        "render": function (data, type, row) {
-                            return `
-                                <a href="/Customer/Edit/${row.id}" class="btn btn-sm btn-outline-success">Edit</a>
-                                <button class="btn btn-sm btn-outline-primary" onclick="Details(${row.id})">Details</button>
-                                <a href="/Customer/Delete/${row.id}" class="btn btn-sm btn-outline-danger">Delete</a>
-                            `;
-                        }
-                    }
-                ]
-            });
-        });
-
-        function Details(id) {
-            $.ajax({
-                url: "@Url.Action("Details", "Customer")",
-                type: "GET",
-                data: { id: id },
-                dataType: "html",
-                success: function (data) {
-                    $("#modalContent").html(data);
-                    $("#myModal").modal("show");
-                },
-                error: function () {
-                    alert("Failed to load details.");
-                }
-            });
-        }
-
-    </script>
-} *@
-@section Scripts {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/datatables/js/jquery.datatables.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#customerTable').DataTable({
-                "ajax": {
-                    "url": '@Url.Action("ListJson", "Customer")',
-                    "type": "GET",
-                    "datatype": "json"
-                },
-                "columns": [
-                    { "data": "customerName", "autoWidth": true },
-                    { "data": "dateOfBirth", "autoWidth": true },
-                    { "data": "occupation", "autoWidth": true },
-                    { "data": "phone", "autoWidth": true },
-                    { "data": "approvedByUserId", "autoWidth": true },
-                    { "data": "approvalDate", "autoWidth": true },
-                    { "data": "aadharNumber", "autoWidth": true },
-                    { "data": "pan", "autoWidth": true },
-                    { "data": "status", "autoWidth": true },
-                    {
-                        "data": "customerId",
-                        "render": function (data, type, row) {
-                            return `
-                                <a href="/Customer/Edit/${data}" class="btn btn-sm btn-outline-success">Edit</a>
-                                <button class="btn btn-sm btn-outline-primary" onclick="Details(${data})">Details</button>
-                                <a href="/Customer/Delete/${data}" class="btn btn-sm btn-outline-danger">Delete</a>
-                            `;
-                        }
-                    }
-                ]
-            });
-        });
-
-        function Details(id) {
-            $.ajax({
-                url: "@Url.Action("Details", "Customer")",
-                type: "GET",
-                data: { id: id },
-                dataType: "html",
-                success: function (data) {
-                    $("#modalContent").html(data);
-                    $("#myModal").modal("show");
-                },
-                error: function () {
-                    alert("Failed to load details.");
-                }
-            });
-        }
-    </script>
-}
-

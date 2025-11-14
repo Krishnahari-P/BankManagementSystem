@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace BankManagementSystem.Entity.Dto
 {
@@ -13,5 +14,6 @@ namespace BankManagementSystem.Entity.Dto
         public int TotalAccounts { get; set; }
         public int TotalAccountTypes { get; set; }
         public int TotalTransactions { get; set; }
+        List<Transaction>? Transactions { get; set; }
     }
 }

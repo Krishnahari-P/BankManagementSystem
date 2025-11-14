@@ -151,11 +151,11 @@ namespace BankManagementSystem.Client.Controllers
 
             try
             {
-                await _client.PostAsync<CustomerRegistrationViewModel>(ApiConstant.CustomerRegistration, model);
+                await _client.PostAsync<CustomerRegistrationViewModel>(ApiConstant.CustomerRegistrationRequest, model);
                 _nToastNotify.AddSuccessToastMessage("Registration Successfull");
                 return RedirectToAction("Success");
             }
-            catch
+            catch(Exception ex) 
             {
                 _nToastNotify.AddErrorToastMessage("Registration Unsuccessfull");
                 return RedirectToAction("Index", "Home");

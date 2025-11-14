@@ -14,6 +14,9 @@ namespace BankManagementSystem.Services.Repository
         Task AddCustomerAsync(Customer customer);
         Task UpdateCustomerAsync(Customer customer);
         Task DeleteCustomerAsync(int id);
-        Task<List<Customer>> GetCustomerBySearchAsync(String customerName, String aadhar, String status, String phone);
+        Task<List<Customer>> GetCustomerBySearchAsync(string? customerName, string? aadhar, string? status, string? phone);
+        Task<Customer?> GetExistingCustomerAsync(string aadhar, string? pan, string phone);
+        Task<Customer?> GetCustomerByUserIdAsync(string userId);
+
     }
 }

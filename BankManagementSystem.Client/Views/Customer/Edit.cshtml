@@ -6,7 +6,6 @@
 
 <h1>Edit</h1>
 
-<h4>CustomerResponse</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -21,7 +20,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DateOfBirth" class="control-label"></label>
-                <input asp-for="DateOfBirth" class="form-control" />
+                <input asp-for="DateOfBirth" class="form-control" type="date" id="dobInput" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -31,19 +30,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
+                <input asp-for="Phone" class="form-control"  />
                 <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ApprovedByUserId" class="control-label"></label>
-                <input asp-for="ApprovedByUserId" class="form-control" />
-                <span asp-validation-for="ApprovedByUserId" class="text-danger"></span>
-            </div>
+            </div>           
             <div class="form-group">
                 <label asp-for="ApprovalDate" class="control-label"></label>
-                <input asp-for="ApprovalDate" class="form-control" />
+                <input asp-for="ApprovalDate" class="form-control" type="date" id="approvalDateInput" />
                 <span asp-validation-for="ApprovalDate" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="AadharNumber" class="control-label"></label>
                 <input asp-for="AadharNumber" class="form-control" />
@@ -53,11 +48,6 @@
                 <label asp-for="PAN" class="control-label"></label>
                 <input asp-for="PAN" class="form-control" />
                 <span asp-validation-for="PAN" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CustomerImageURL" class="control-label"></label>
-                <input asp-for="CustomerImageURL" class="form-control" />
-                <span asp-validation-for="CustomerImageURL" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -72,4 +62,16 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            const today = new Date().toISOString().split('T')[0];
+            $('#dobInput').attr('max', today);
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            const today = new Date().toISOString().split('T')[0];
+            $('#approvalDateInput').attr('max', today);
+        });
+    </script>
 }

@@ -1,6 +1,7 @@
 ﻿using BankManagementSystem.Entity.Dto;
 using BankManagementSystem.Entity.Models;
 using BankManagementSystem.Services.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -9,6 +10,7 @@ namespace BankManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionRepository _transactionRepository;
@@ -125,7 +127,7 @@ namespace BankManagementSystem.Controllers
                 Amount = model.Amount,
                 TransactionDate = DateTime.Now.Date,
                 Description = model.Description ?? "Withdrawal transaction",
-                Status = "Pending"
+                Status = "Pending",
             };
 
             await _transactionRepository.AddTransactionAsync(transaction);
@@ -140,7 +142,7 @@ namespace BankManagementSystem.Controllers
 
         #endregion
 
-        #region GetTransactionByAccount
+        #region GetTransactions
         [HttpGet("GetTransactionsByAccount")]
         public async Task<IActionResult> GetTransactionsByAccount(int accountId)
         {
@@ -150,6 +152,80 @@ namespace BankManagementSystem.Controllers
 
             return Ok(transactions);
         }
+
+        [HttpGet("GetTransactionsBySearch")]
+        public async Task<IActionResult> GetTransactionsBySearch(string? status, DateTime? date)
+        {
+            var transactions = await _transactionRepository.GetTransactionBySearchAsync(status, date);
+            if (transactions == null || !transactions.Any())
+                return NotFound("No transactions found");
+
+            return Ok(transactions);
+        }
+
+        [HttpGet("GetTransactionsByCustomerId")]
+        public async Task<IActionResult> GetTransactionsByCustomerId(int customerId)
+        {
+            var transactions = await _transactionRepository.GetTransactionsByCustomerIdAsync(customerId);
+            if (transactions == null || !transactions.Any())
+                return NotFound("No transactions found for this customer.");
+
+            return Ok(transactions);
+        }
+
+        #endregion
+
+        #region Transfer
+        [HttpPost("Transfer")]
+        public async Task<IActionResult> Transfer([FromBody] TransferRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var sender = await _accountRepository.GetAccountByIdAsync(model.SenderAccountId);
+            if (sender == null)
+                return NotFound("Sender account not found.");
+
+            if (sender.Status != "Active")
+                return BadRequest("Sender account must be active to perform transfers.");
+
+            if (sender.Balance < model.Amount)
+                return BadRequest("Insufficient balance in sender account.");
+
+            var recipient = await _accountRepository.GetAccountByAccountNumberAsync(model.RecipientAccountNumber);
+            if (recipient == null)
+                return NotFound("Recipient account not found.");
+
+            if (recipient.AccountId == sender.AccountId)
+                return BadRequest("Sender and recipient accounts cannot be the same.");
+
+            sender.Balance -= model.Amount;
+            recipient.Balance += model.Amount;
+
+            await _accountRepository.UpdateAccountAsync(sender);
+            await _accountRepository.UpdateAccountAsync(recipient);
+
+            var transaction = new Transaction
+            {
+                AccountId = sender.AccountId,
+                RecipientAccountId = recipient.AccountId,
+                TransactionType = "Transfer",
+                Amount = model.Amount,
+                TransactionDate = DateTime.Now.Date,
+                Description = model.Description ?? "Transfer transaction",
+                Status = "Completed"
+            };
+
+            await _transactionRepository.AddTransactionAsync(transaction);
+
+            return Ok(new
+            {
+                Message = "Transfer successful.",
+                SenderBalance = sender.Balance,
+                RecipientAccount = recipient.AccountNumber
+            });
+        }
+
         #endregion
     }
 }

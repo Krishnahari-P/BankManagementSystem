@@ -2,40 +2,146 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="container mt-5">
-    <div class="row align-items-center justify-content-center">
-        <!-- Left section: Welcome text -->
-        <div class="col-md-6 text-center text-md-start">
-            <h1 class="display-4 fw-bold text-primary mb-3">Welcome to the Bank Management System</h1>
-            <p class="lead text-secondary mb-4">
-                Manage your customers, employees, and accounts efficiently through a secure and intuitive system.
-                Register as a new customer or log in to your account to get started.
-            </p>
-            <div class="d-flex flex-column flex-md-row gap-3">
-                <a asp-controller="Customer" asp-action="Register" class="btn btn-success btn-lg px-4">
-                    <i class="bi bi-person-plus-fill me-2"></i> Register as Customer
-                </a>
-                @if (User.Identity?.IsAuthenticated ?? false)
-                {
-                    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-primary btn-lg px-4">
-                        <i class="bi bi-box-arrow-in-right me-2"></i> Go to Dashboard
+<section class="hero-section py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 mb-3">
+                    <i class="bi bi-bank2 me-2"></i> Trusted Banking Since 2024
+                </span>
+
+                <h1 class="display-4 fw-bold mb-3 text-dark">Smart & Secure Banking</h1>
+                <p class="lead text-secondary mb-4">
+                    A modern banking platform designed to help you manage accounts,
+                    make secure transactions, and access real-time financial insights.
+                </p>
+
+                <div class="d-flex flex-column flex-sm-row gap-3 mb-4">
+                    <a asp-controller="Customer" asp-action="Register" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-person-plus-fill me-2"></i> Register
                     </a>
-                }
-                else
+
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-lg px-4">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                        </a>
+                    }
+                </div>
+
+                <div class="d-flex gap-4">
+                    <div>
+                        <h4 class="fw-bold text-primary mb-0">10K+</h4>
+                        <small class="text-muted">Customers</small>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-primary mb-0">99.9%</h4>
+                        <small class="text-muted">Uptime</small>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-primary mb-0">24/7</h4>
+                        <small class="text-muted">Support</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 text-center">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                     class="img-fluid hero-image" alt="Bank Image">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-dark">Why Choose Us</h2>
+            <p class="text-muted">A reliable banking system crafted for modern financial needs</p>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var feature in new[] {
+                        new { Icon="bi-shield-check", Title="Secure Banking", Desc="Bank-level encryption and security." },
+                        new { Icon="bi-lightning-charge", Title="Instant Transfers", Desc="Real-time deposits & transfers." },
+                        new { Icon="bi-graph-up-arrow", Title="Insights", Desc="Track spending with smart analytics." },
+                        new { Icon="bi-headset", Title="24/7 Support", Desc="Round-the-clock customer care." }
+                        })
+            {
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card text-center p-4">
+                        <div class="icon-wrapper mx-auto mb-3">
+                            <i class="bi @feature.Icon fs-1 text-primary"></i>
+                        </div>
+                        <h5 class="fw-bold">@feature.Title</h5>
+                        <p class="text-muted mb-0">@feature.Desc</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-primary-subtle">
+    <div class="container">
+        <div class="card border-0 shadow-sm p-5 text-center bg-white">
+            <h2 class="fw-bold text-dark mb-3">Start Your Banking Journey</h2>
+            <p class="text-muted mb-4">
+                A secure, simple, and intuitive banking solution designed for you.
+            </p>
+
+            <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                <a asp-controller="Customer" asp-action="Register" class="btn btn-primary btn-lg px-5">
+                    <i class="bi bi-person-plus-fill me-2"></i> Create Account
+                </a>
+
+                @if (!(User.Identity?.IsAuthenticated ?? false))
                 {
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-lg px-4">
-                        <i class="bi bi-box-arrow-in-right me-2"></i> Login to Account
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-primary btn-lg px-5">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
                     </a>
                 }
             </div>
         </div>
-
-        <!-- Right section: Illustration -->
-        <div class="col-md-6 text-center mt-5 mt-md-0">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                 alt="Bank Illustration" class="img-fluid" style="max-width: 80%; height: auto;">
-        </div>
     </div>
-</div>
+</section>
 
+<style>
+    .hero-section {
+        background: #f8f9fc;
+        border-bottom: 1px solid #e9ecef;
+    }
 
+    .hero-image {
+        max-width: 75%;
+        filter: drop-shadow(0 6px 20px rgba(0,0,0,0.15));
+    }
+
+    .feature-card {
+        border-radius: 12px;
+        transition: all 0.25s ease-in-out;
+        border: 1px solid #f1f1f1;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+        }
+
+    .icon-wrapper {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: #eef2ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>

@@ -34,7 +34,8 @@ namespace BankManagementSystem.Entity.Models
                 .IsUnique();
 
                 entity.HasIndex(c => c.PAN)
-                .IsUnique();
+               .IsUnique()
+               .HasFilter("[PAN] IS NOT NULL");
 
                 entity.HasIndex(c => c.Phone)
                 .IsUnique();
@@ -73,6 +74,9 @@ namespace BankManagementSystem.Entity.Models
 
             modelBuilder.Entity<Account>(entity =>
             {
+                entity.Property(a => a.AccountNumber)
+                .IsRequired(false);
+
                 entity.HasIndex(a => a.AccountNumber)
                     .IsUnique();
 
@@ -152,6 +156,33 @@ namespace BankManagementSystem.Entity.Models
             identityUserRole.UserId = "2b9d215a-65b4-44b7-872e-a5780fb66fd6";
             identityUserRole.RoleId = "46b36bf0-15ee-4631-aa11-8a7007aca77c";
             modelBuilder.Entity<IdentityUserRole<String>>().HasData(identityUserRole);
+            //Customer
+
+            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
+
+            {
+
+                Id = "2f76f0c3-4bfa-4e60-aca6-82c3cd7d22bb",
+
+                Name = "Customer",
+
+                NormalizedName = "CUSTOMER"
+
+            });
+
+            //Employee
+
+            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
+
+            {
+
+                Id = "68f74df6-eacf-4995-a00e-24238b575ab0",
+
+                Name = "Manager",
+
+                NormalizedName = "MANAGER"
+
+            });
 
             base.OnModelCreating(modelBuilder);
 

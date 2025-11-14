@@ -10,6 +10,7 @@ namespace BankManagementSystem.Services.Repository
     public interface IEmployeeRepository
     {
         Task<List<Employee>> GetAllEmployeesAsync();
+        Task<List<Employee>> GetAllEmployeesBySearchAsync(string? name, string? phone);
         Task<Employee> GetEmployeeByIdAsync(int id);
         Task AddEmployeeAsync(Employee employee);
         Task UpdateEmployeeAsync(Employee employee);

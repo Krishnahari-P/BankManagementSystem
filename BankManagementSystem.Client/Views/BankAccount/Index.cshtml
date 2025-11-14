@@ -1,71 +1,95 @@
 ﻿@model IEnumerable<BankManagementSystem.Client.Dto.AccountResponse>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Account List";
 }
 
-<h1>Index</h1>
+<div class="container mt-4">
+    <h2 class="fw-bold text-primary mb-3">Account Management</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountTypeId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Balance)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountTypeId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Balance)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.AccountId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.AccountId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.AccountId })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <form asp-action="List" asp-asp-controller="BankAccount" method="get" class="row g-2 mb-4">
+        <div class="col-md-3">
+            <input type="text" name="accountNumber" class="form-control" placeholder="Search by account number" />
+        </div>
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Search
+            </button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-primary text-center">
+            <tr>
+                <th>Account Number</th>
+                <th>Customer</th>
+                <th>Account Type</th>
+                <th>Balance</th>
+                <th>Created Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr class="text-center">
+                        <td>@item.AccountNumber</td>
+                        <td>@item.CustomerName</td>
+                        <td>@item.AccountTypeName</td>
+                        <td>@item.Balance</td>
+                        <td>@item.CreatedDate.ToString("dd-MM-yyyy")</td>
+                        <td>
+                            @if (item.Status == "Pending")
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                            else if (item.Status == "Active")
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@item.Status</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.Status == "Pending")
+                            {
+                                <form asp-controller="Administrative" asp-action="ApproveAccount" method="post" style="display:inline;">
+                                    <input type="hidden" name="accountId" value="@item.AccountId" />
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="bi bi-check-circle me-1"></i> Approve
+                                    </button>
+                                </form>
+                                <form asp-controller="Administrative" asp-action="RejectAccount" method="post" style="display:inline;">
+                                    <input type="hidden" name="accountId" value="@item.AccountId" />
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-x-circle me-1"></i> Reject
+                                    </button>
+                                </form>
+                            }
+
+                            <div class="mt-2">
+                                <a asp-action="Edit" asp-route-id="@item.AccountId" class="btn btn-outline-success btn-sm me-1">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.AccountId" class="btn btn-outline-info btn-sm me-1">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center text-muted">No accounts found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

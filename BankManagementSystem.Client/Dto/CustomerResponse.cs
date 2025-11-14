@@ -9,6 +9,7 @@
         public string? Occupation { get; set; }
         public string? Phone { get; set; }
         public String? ApprovedByUserId { get; set; }
+        public string? ApprovedByName { get; set; }
         public DateTime? ApprovalDate { get; set; }
         public string? AadharNumber { get; set; }
         public string? PAN { get; set; }

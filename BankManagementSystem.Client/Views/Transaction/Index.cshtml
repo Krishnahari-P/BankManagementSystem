@@ -1,77 +1,123 @@
 ﻿@model IEnumerable<BankManagementSystem.Client.Dto.TransactionResponse>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Transactions";
 }
 
-<h1>Index</h1>
+<div class="container mt-4">
+    <h2 class="fw-bold text-primary mb-3">Transaction Management</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TransactionId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TransactionType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TransactionDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RecipientAccountId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProcessedByUserId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactionId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactionType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactionDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RecipientAccountId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProcessedByUserId)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.TransactionId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.TransactionId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.TransactionId })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <form asp-action="List" method="get" class="row g-2 mb-4">
+        <div class="col-md-2">
+            <select name="status" class="form-select">
+                <option value="">-- Status --</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Active">Completed</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="date" class="form-control" placeholder="Search by date" />
+        </div>
+        <div class="col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Search
+            </button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-primary text-center">
+            <tr>
+                <th>Transaction ID</th>
+                <th>Account</th>
+                <th>Transaction Type</th>
+                <th>Amount</th>
+                <th>Recipient</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr class="text-center">
+                        <td>@item.TransactionId</td>
+                        <td>@item.AccountNumber</td>
+                        <td>@item.TransactionType</td>
+                        <td><i class="fa-solid fa-indian-rupee-sign text-success"></i> @item.Amount.ToString("0.00")</td>
+                        <td>
+                            @if (item.TransactionType == "Transfer")
+                            {
+                                <span>
+                                    <strong>To:</strong> @(item.RecipientAccountNumber ?? $"#{item.RecipientAccountId}")
+                                </span>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                        <td>@item.TransactionDate.ToString("dd-MM-yyyy")</td>
+                        <td>@(string.IsNullOrEmpty(item.Description) ? "-" : item.Description)</td>
+
+                        <td>
+                            @if (item.Status == "Pending")
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                            else if (item.Status == "Approved")
+                            {
+                                <span class="badge bg-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@item.Status</span>
+                            }
+                        </td>
+
+                        <td>
+                            @if (item.Status == "Pending" && item.TransactionType == "Deposit")
+                            {
+                                <form asp-controller="Administrative" asp-action="ApproveDeposit" method="post" style="display:inline;">
+                                    <input type="hidden" name="transactionId" value="@item.TransactionId" />
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="fa-solid fa-check-circle me-1"></i> Approve
+                                    </button>
+                                </form>
+                            }
+                            else if(item.Status == "Pending" && item.TransactionType == "Withdraw")
+                            {
+                                <form asp-controller="Administrative" asp-action="ApproveWithdraw" method="post" style="display:inline;">
+                                    <input type="hidden" name="transactionId" value="@item.TransactionId" />
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="fa-solid fa-check-circle me-1"></i> Approve
+                                    </button>
+                                </form>
+                            }
+
+                            <div class="mt-2">
+                                <a asp-action="Details" asp-route-id="@item.TransactionId" class="btn btn-outline-info btn-sm me-1">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center text-muted">No transactions found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+

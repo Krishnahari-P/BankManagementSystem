@@ -2,16 +2,19 @@
 using BankManagementSystem.Client.HttpClients;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 
 namespace BankManagementSystem.Client.Controllers
 {
     public class BankAccountController : Controller
     {
         private readonly IGenericHttpClient _client;
+        private readonly IToastNotification _nToastNotify;
 
-        public BankAccountController(IGenericHttpClient client)
+        public BankAccountController(IGenericHttpClient client,IToastNotification nToastNotify)
         {
             _client = client;
+            _nToastNotify = nToastNotify;
         }
 
         public async Task<ActionResult> Index()
@@ -28,9 +31,54 @@ namespace BankManagementSystem.Client.Controllers
             return View(account);
         }
 
+        public async Task<IActionResult> List(string? accountNumber)
+        {
+            try
+            {
+                var account = await _client.GetAsync<AccountResponse>(
+                    $"{ApiConstant.GetAccountByAccountNumber}?accountNumber={accountNumber}"
+                );
+
+                if (account != null)
+                    return View("Index", new List<AccountResponse> { account });
+                else
+                    _nToastNotify.AddErrorToastMessage("Account not found");
+            }
+            catch
+            {
+                _nToastNotify.AddErrorToastMessage("Fetching failed");
+            }
+
+            return View("Index", new List<AccountResponse>());
+        }
+
+
         public ActionResult Create()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RequestAccount([FromBody] AccountRequest model)
+        {
+            try
+            {
+                var customerId = int.Parse(User.FindFirst("CustomerId")?.Value ?? "0");
+                if (customerId == 0)
+                    return BadRequest("Invalid or missing customer information.");
+                model.CustomerId = customerId;
+                var response = await _client.PostAsync<object>(ApiConstant.RequestAccount, model);
+                _nToastNotify.AddSuccessToastMessage("Account request submitted successfully!");
+                return Json(new { message = "Account request submitted successfully!" });
+            }
+            catch (HttpRequestException ex)
+            {
+                return BadRequest($"API error: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Unexpected error: {ex.Message}");
+            }
         }
 
         [HttpPost]
