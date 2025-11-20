@@ -10,6 +10,7 @@ namespace BankManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     //[Authorize(AuthenticationSchemes ="Basic")]
     public class CustomerController : ControllerBase
     {
@@ -29,8 +30,21 @@ namespace BankManagementSystem.Controllers
             {
                 return NotFound();
             }
+            var customerResponses = customers.Select(c => new Customer
+            {
+                CustomerId = c.CustomerId,
+                CustomerName = c.CustomerName,
+                Phone = c.Phone,
+                AadharNumber=c.AadharNumber,
+                PAN=c.PAN,
+                Occupation=c.Occupation,
+                DateOfBirth=c.DateOfBirth,
+                Status = c.Status,
+                ApprovalDate = c.ApprovalDate,
+                ApprovedByName = c.ApprovedByUserSet != null ? c.ApprovedByUserSet.UserName : "—"
+            }).ToList();
 
-            return Ok(customers);
+            return Ok(customerResponses);
         }
 
         [HttpGet("GetCustomerById")]

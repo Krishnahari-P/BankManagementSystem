@@ -14,6 +14,5 @@ namespace BankManagementSystem.Entity.Dto
         public int TotalAccounts { get; set; }
         public int TotalAccountTypes { get; set; }
         public int TotalTransactions { get; set; }
-        List<Transaction>? Transactions { get; set; }
     }
 }

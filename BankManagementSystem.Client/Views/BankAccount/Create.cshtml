@@ -10,11 +10,7 @@
     <form id="accountForm">
         <div class="mb-3">
             <label class="form-label">Account Type</label>
-            <select id="AccountTypeId" name="AccountTypeId" class="form-select" required>
-                <option value="">-- Select Type --</option>
-                <option value="1">Savings</option>
-                <option value="2">Current</option>
-                <option value="3">Fixed Deposit</option>
+            <select asp-for="AccountTypeId" asp-items="@Model.AccountTypeList" class="form-control">
             </select>
         </div>
 

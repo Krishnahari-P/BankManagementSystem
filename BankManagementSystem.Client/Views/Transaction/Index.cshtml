@@ -4,6 +4,30 @@
     ViewData["Title"] = "Transactions";
 }
 
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Details of Student</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modalContent">
+                Modal body..
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <div class="container mt-4">
     <h2 class="fw-bold text-primary mb-3">Transaction Management</h2>
 
@@ -102,7 +126,7 @@
                             }
 
                             <div class="mt-2">
-                                <a asp-action="Details" asp-route-id="@item.TransactionId" class="btn btn-outline-info btn-sm me-1">
+                                <a href="#" class="Details btn btn-outline-primary btn-sm" data-id="@item.TransactionId">
                                     <i class="fa-solid fa-circle-info"></i>
                                 </a>
                             </div>
@@ -119,5 +143,28 @@
         </tbody>
     </table>
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function (){
+            $(".Details").click(function(){
+                var id=$(this).attr("data-id");
+                $.ajax({
+                    url:"@Url.Action("Details", "Transaction")",
+                    type:"GET",
+                    data:{"id":id},
+                    dataType:"html",
+                    success:function(data){
+                        $("#modalContent").html(data),
+                        $("#myModal").modal("show");
 
+                    },
+                    error:function(){
+                        alert("Dynamic load failed");
+                    },
+
+                })
+            });
+        });
+    </script>
+}
 

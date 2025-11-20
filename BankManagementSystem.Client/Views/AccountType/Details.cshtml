@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Details";
+    Layout = "_DetailsLayout";
+
 }
 
 <h1>Details</h1>
@@ -36,7 +38,24 @@
         </dd>
     </dl>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.AccountTypeId }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+<style>
+    dl.row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+        dl.row dt {
+            flex: 0 0 25% !important;
+            font-weight: 600;
+            text-align: right;
+            padding-right: 10px;
+            align-self: center;
+        }
+
+        dl.row dd {
+            flex: 0 0 70% !important;
+            margin: 0 !important;
+            align-self: center;
+            word-break: break-word;
+        }
+</style>

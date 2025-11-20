@@ -20,73 +20,130 @@ namespace BankManagementSystem.Services.Repository
 
         public async Task AddCustomerAsync(Customer customer)
         {
-            _context.CustomerSet.Add(customer);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.CustomerSet.Add(customer);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task DeleteCustomerAsync(int id)
         {
-            var customer = await _context.CustomerSet.FindAsync(id);
-            _context.CustomerSet.Remove(customer);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var customer = await _context.CustomerSet.FindAsync(id);
+                _context.CustomerSet.Remove(customer);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task<List<Customer>> GetAllCustomersAsync()
         {
-            var customerList = await _context.CustomerSet.ToListAsync();         
-            return customerList;
+            try
+            {
+                var customers = await _context.CustomerSet
+                .Include(c => c.ApprovedByUserSet)
+                .ToListAsync();
+                return customers;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task<Customer> GetCustomerByIdAsync(int id)
         {
-            var customer = await _context.CustomerSet.FindAsync(id);
-            //return customer ?? throw new NotImplementedException();
-            if (customer == null)
-                return null;
-            return customer;
+            try
+            {
+                var customer = await _context.CustomerSet.FindAsync(id);
+                if (customer == null)
+                    return null;
+                return customer;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
 
         }
 
         public async Task<Customer?> GetCustomerByUserIdAsync(string userId)
         {
-            return await _context.CustomerSet.FirstOrDefaultAsync(c => c.ApplicationUserID == userId);
+            try
+            {
+                return await _context.CustomerSet.FirstOrDefaultAsync(c => c.ApplicationUserID == userId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
 
         public async Task<Customer?> GetExistingCustomerAsync(string aadhar, string? pan, string phone)
         {
-            return await _context.CustomerSet
-                .FirstOrDefaultAsync(c =>
-                    c.AadharNumber == aadhar ||
-                    c.PAN == pan ||
-                    c.Phone == phone);
+            try
+            {
+                return await _context.CustomerSet
+                       .FirstOrDefaultAsync(c =>
+                           c.AadharNumber == aadhar ||
+                           c.PAN == pan ||
+                           c.Phone == phone);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task<List<Customer>> GetCustomerBySearchAsync(string? customerName, string? aadhar, string? status, string? phone)
         {
-            var query = _context.CustomerSet.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(customerName))
+            try
             {
-                query = query.Where(x => x.CustomerName.Contains(customerName));
+                var query = _context.CustomerSet.AsQueryable();
+                if (!string.IsNullOrWhiteSpace(customerName))
+                {
+                    query = query.Where(x => x.CustomerName.Contains(customerName));
+                }
+                if (!string.IsNullOrWhiteSpace(aadhar))
+                {
+                    query = query.Where(x => x.AadharNumber.Contains(aadhar));
+                }
+                if (!string.IsNullOrWhiteSpace(status))
+                {
+                    query = query.Where(x => x.Status.Contains(status));
+                }
+                if (!string.IsNullOrWhiteSpace(phone))
+                {
+                    query = query.Where(x => x.Phone.Contains(phone));
+                }
+                return await query.ToListAsync();
             }
-            if (!string.IsNullOrWhiteSpace(aadhar))
+            catch (Exception e)
             {
-                query = query.Where(x => x.AadharNumber.Contains(aadhar));
+                throw new Exception(e.Message);
             }
-            if (!string.IsNullOrWhiteSpace(status))
-            {
-                query = query.Where(x => x.Status.Contains(status));
-            }
-            if (!string.IsNullOrWhiteSpace(phone))
-            {
-                query = query.Where(x => x.Phone.Contains(phone));
-            }
-            return await query.ToListAsync();
         }
         public async Task UpdateCustomerAsync(Customer customer)
         {
-            _context.CustomerSet.Update(customer);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.CustomerSet.Update(customer);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
     }
 }

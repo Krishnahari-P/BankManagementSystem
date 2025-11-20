@@ -1,60 +1,108 @@
 ﻿@model BankManagementSystem.Client.Dto.EmployeeResponse
-
 @{
     ViewData["Title"] = "Details";
+    Layout = "_DetailsLayout";
 }
 
-<h1>Details</h1>
+<div class="container mt-3 mb-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white py-2" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Employee Details</h5>
+                    </div>
+                </div>
+                <div class="card-body p-3">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="detail-box">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-hash me-1"></i>@Html.DisplayNameFor(model => model.StaffCode)
+                                </small>
+                                <strong>@Html.DisplayFor(model => model.StaffCode)</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-box">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-person me-1"></i>@Html.DisplayNameFor(model => model.EmployeeName)
+                                </small>
+                                <strong>@Html.DisplayFor(model => model.EmployeeName)</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-box">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-telephone me-1"></i>@Html.DisplayNameFor(model => model.Phone)
+                                </small>
+                                <strong>@Html.DisplayFor(model => model.Phone)</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-box">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-briefcase me-1"></i>@Html.DisplayNameFor(model => model.JobTitle)
+                                </small>
+                                <strong>@Html.DisplayFor(model => model.JobTitle)</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="detail-box">
+                                <small class="text-muted d-block mb-1">
+                                    <i class="bi bi-calendar-check me-1"></i>@Html.DisplayNameFor(model => model.HiredDate)
+                                </small>
+                                <strong>@Html.DisplayFor(model => model.HiredDate)</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div>
-    <h4>EmployeeResponse</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EmployeeId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EmployeeId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ApplicationUserID)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ApplicationUserID)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StaffCode)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StaffCode)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EmployeeName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EmployeeName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.JobTitle)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.JobTitle)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.HiredDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HiredDate)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.EmployeeId }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+<style>
+    dl.row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+        dl.row dt {
+            flex: 0 0 25% !important;
+            font-weight: 600;
+            text-align: right;
+            padding-right: 10px;
+            align-self: center;
+        }
+
+        dl.row dd {
+            flex: 0 0 70% !important;
+            margin: 0 !important;
+            align-self: center;
+            word-break: break-word;
+        }
+
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .detail-box {
+        background: #f8f9fa;
+        padding: 0.75rem;
+        border-radius: 8px;
+        border-left: 3px solid #2a5298;
+        height: 100%;
+    }
+
+        .detail-box strong {
+            color: #333;
+            font-size: 1rem;
+        }
+
+    .btn-light:hover {
+        background-color: #fff;
+        transform: translateY(-1px);
+    }
+</style>

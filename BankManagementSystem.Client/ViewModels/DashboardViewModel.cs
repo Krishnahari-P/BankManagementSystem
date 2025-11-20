@@ -10,5 +10,6 @@ namespace BankManagementSystem.Client.ViewModels
         public int TotalAccountTypes { get; set; }
         public int TotalTransactions { get; set; }
         public List<TransactionResponse>? Transactions { get; set; }
+        public List<AccountResponse>? Accounts { get; set; }
     }
 }

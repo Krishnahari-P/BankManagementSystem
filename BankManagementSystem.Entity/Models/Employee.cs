@@ -31,6 +31,7 @@ namespace BankManagementSystem.Entity.Models
         [Required]
         [DataType(DataType.Date)]
         public DateTime HiredDate { get; set; }
+        public string? Status { get; set; }
         public ApplicationUser? ApplicationUserSet { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    Layout = "_DetailsLayout";
 }
 
 <h1>Details</h1>
@@ -23,16 +24,16 @@
             @Html.DisplayFor(model => model.AccountNumber)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CustomerId)
+            @Html.DisplayNameFor(model => model.CustomerName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CustomerId)
+            @Html.DisplayFor(model => model.CustomerName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AccountTypeId)
+            @Html.DisplayNameFor(model => model.AccountTypeName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AccountTypeId)
+            @Html.DisplayFor(model => model.AccountTypeName)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Balance)
@@ -54,7 +55,24 @@
         </dd>
     </dl>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.AccountId }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+<style>
+    dl.row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+        dl.row dt {
+            flex: 0 0 25% !important;
+            font-weight: 600;
+            text-align: right;
+            padding-right: 10px;
+            align-self: center;
+        }
+
+        dl.row dd {
+            flex: 0 0 70% !important;
+            margin: 0 !important;
+            align-self: center;
+            word-break: break-word;
+        }
+</style>

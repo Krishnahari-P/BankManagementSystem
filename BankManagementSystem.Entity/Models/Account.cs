@@ -4,7 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace BankManagementSystem.Entity.Models
 {
@@ -31,7 +33,10 @@ namespace BankManagementSystem.Entity.Models
         public String Status { get; set; } = "Pending";
         public Customer? CustomerSet { get; set; }
         public AccountType? AccountTypeSet { get; set; }
+        [JsonIgnore]
         public ICollection<Transaction>? InitiatedTransactions { get; set; }
+        [JsonIgnore]
         public ICollection<Transaction>? ReceivedTransactions { get; set; }
+
     }
 }

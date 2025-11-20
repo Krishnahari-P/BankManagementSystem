@@ -3,7 +3,29 @@
 @{
     ViewData["Title"] = "Account List";
 }
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Details of Student</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="modalContent">
+                Modal body..
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 <div class="container mt-4">
     <h2 class="fw-bold text-primary mb-3">Account Management</h2>
 
@@ -75,9 +97,6 @@
                             <div class="mt-2">
                                 <a asp-action="Edit" asp-route-id="@item.AccountId" class="btn btn-outline-success btn-sm me-1">
                                     <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.AccountId" class="btn btn-outline-info btn-sm me-1">
-                                    <i class="bi bi-info-circle"></i>
                                 </a>
                             </div>
                         </td>

@@ -2,7 +2,10 @@
 using BankManagementSystem.Client.HttpClients;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NToastNotify;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace BankManagementSystem.Client.Controllers
 {
@@ -53,9 +56,11 @@ namespace BankManagementSystem.Client.Controllers
         }
 
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            return View();
+            var account = new AccountRequest();
+            account.AccountTypeList=await GetAccountTypeList();
+            return View(account);
         }
 
         [HttpPost]
@@ -87,7 +92,7 @@ namespace BankManagementSystem.Client.Controllers
         public async Task<ActionResult> Create(AccountResponse accountResponse)
         {
             try
-            {
+            {              
                 await _client.PostAsync<AccountResponse>(ApiConstant.AddAccount, accountResponse);
                 return RedirectToAction(nameof(Index));
             }
@@ -142,6 +147,17 @@ namespace BankManagementSystem.Client.Controllers
                 return View();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<List<SelectListItem>> GetAccountTypeList()
+        {
+            var accountTypes = await _client.GetAsync<List<AccountTypeResponse>>(ApiConstant.GetAllAccountTypes);
+
+            return accountTypes.Select(x => new SelectListItem
+            {
+                Value = x.AccountTypeId.ToString(),
+                Text = x.TypeName
+            }).ToList();
         }
     }
 }

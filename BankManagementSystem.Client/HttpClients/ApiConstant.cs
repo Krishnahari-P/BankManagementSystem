@@ -11,14 +11,12 @@
         #endregion
 
         #region Account
-        public const string Register = "Account/Register";
         public const string ChangePassword = "Account/ChangePassword";
         #endregion
 
         #region Token
         public const string Authenticate = "Token/GetToken";
         #endregion
-
 
         #region Customer
         public const string GetCustomerById = "Customer/GetCustomerById";
@@ -85,7 +83,6 @@
         public const string ApproveDeposit = "Administrative/ApproveDeposit";
         public const string ApproveWithdraw = "Administrative/ApproveWithdraw";
         public const string AddEmployee = "Administrative/AddEmployee";
-
         #endregion
 
     }

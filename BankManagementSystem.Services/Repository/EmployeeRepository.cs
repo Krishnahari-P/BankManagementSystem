@@ -19,47 +19,92 @@ namespace BankManagementSystem.Services.Repository
 
         public async Task AddEmployeeAsync(Employee employee)
         {
-            _context.EmployeeSet.Add(employee);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.EmployeeSet.Add(employee);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task DeleteEmployeeAsync(int id)
         {
-            var employee = await _context.EmployeeSet.FindAsync(id);
-            _context.EmployeeSet.Remove(employee);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var employee = await _context.EmployeeSet.FindAsync(id);
+                _context.EmployeeSet.Remove(employee);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task<List<Employee>> GetAllEmployeesAsync()
         {
-            var employeeList = await _context.EmployeeSet.ToListAsync();
-            return employeeList;
+            try
+            {
+                var employeeList = await _context.EmployeeSet.ToListAsync();
+                return employeeList;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+
+            }
         }
 
         public async Task<List<Employee>> GetAllEmployeesBySearchAsync(string? name, string? phone)
         {
-            var query=_context.EmployeeSet.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(name))
+            try
             {
-                query = query.Where(x => x.EmployeeName.Contains(name));
+                var query = _context.EmployeeSet.AsQueryable();
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    query = query.Where(x => x.EmployeeName.Contains(name));
+                }
+                if (!string.IsNullOrWhiteSpace(phone))
+                {
+                    query = query.Where(x => x.Phone.Contains(phone));
+                }
+                return await query.ToListAsync();
             }
-            if (!string.IsNullOrWhiteSpace(phone))
+            catch (Exception e)
             {
-                query = query.Where(x => x.Phone.Contains(phone));
+                throw new Exception(e.Message);
             }
-            return await query.ToListAsync();
         }
 
         public async Task<Employee> GetEmployeeByIdAsync(int id)
         {
-            var employee = await _context.EmployeeSet.FindAsync(id);
-            return employee ?? throw new NotImplementedException();
+            try
+            {
+                var employee = await _context.EmployeeSet.FindAsync(id);
+                return employee ?? throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+
+            }
         }
 
         public async Task UpdateEmployeeAsync(Employee employee)
         {
-            _context.EmployeeSet.Update(employee);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.EmployeeSet.Update(employee);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+
+            }
         }
     }
 }

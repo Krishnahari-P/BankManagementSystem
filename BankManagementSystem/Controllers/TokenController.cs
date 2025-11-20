@@ -15,22 +15,26 @@ public class TokenController : ControllerBase
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IConfiguration _configuration;
     private readonly ICustomerRepository _customerRepository;
+    private readonly IUserRepository _userRepository;
 
-    public TokenController(UserManager<ApplicationUser> userManager, IConfiguration configuration,ICustomerRepository customerRepository)
+    public TokenController(UserManager<ApplicationUser> userManager, IConfiguration configuration,ICustomerRepository customerRepository, IUserRepository userRepository)
     {
         _userManager = userManager;
         _configuration = configuration;
         _customerRepository = customerRepository;
+        _userRepository = userRepository;
     }
 
     [HttpPost("GetToken")]
     public async Task<IActionResult> GetToken([FromBody] UserRequest request)
     {
-        var user = await _userManager.FindByNameAsync(request.UserName);
-
-        if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
+        var authResult = await _userRepository.Authenticate(request);
+        if (authResult.Response == null)
+        {
             return Unauthorized("Invalid username or password.");
-
+        }
+        var user = await _userManager.FindByIdAsync(authResult.Response.Id);
+        //var user = await _userManager.FindByNameAsync(request.UserName);
         var roles = await _userManager.GetRolesAsync(user);
         var customer = await _customerRepository.GetCustomerByUserIdAsync(user.Id);
 

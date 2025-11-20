@@ -21,9 +21,9 @@ namespace BankManagementSystem.Client.Controllers
             try
             {
                 await _client.PutAsync<object>($"{ApiConstant.ApproveCustomer}?id={id}", null);
-                var accountResponse= await _client.PostAsync<dynamic>($"{ApiConstant.CreateCustomerAccount}?customerId={id}", null);
+                var accountResponse= await _client.PostAsync<UserResponse>($"{ApiConstant.CreateCustomerAccount}?customerId={id}", null);
 
-                return Json ( new {data = accountResponse});
+                return Json (accountResponse);
             }
             catch (HttpRequestException ex)
             {

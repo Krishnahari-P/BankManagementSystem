@@ -31,6 +31,11 @@ namespace BankManagementSystem.Client.Controllers
                             $"{ApiConstant.GetTransactionsByCustomerId}?customerId={customerId}"
                         );
                         model.Transactions = transactions;
+
+                        var accounts = await _client.GetAsync<List<AccountResponse>>(
+                            $"{ApiConstant.GetAccountsByCustomer}?customerId={customerId}"
+                        );
+                        model.Accounts = accounts;
                     }
                 }
             }

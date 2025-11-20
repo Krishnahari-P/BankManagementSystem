@@ -27,12 +27,6 @@ namespace BankManagementSystem.Controllers
             var result = await _repository.Authenticate(model);
             return Ok(result);
         }
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register(UserRequest model)
-        {
-            var result = await _repository.Register(model);
-            return Ok(result);
-        }
 
         [Authorize]
         [HttpPost("ChangePassword")]

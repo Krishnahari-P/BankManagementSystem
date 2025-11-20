@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BankManagementSystem.Client.Dto
@@ -15,5 +16,8 @@ namespace BankManagementSystem.Client.Dto
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; }
         public String Status { get; set; }
+        public AccountTypeResponse? AccountTypeSet { get; set; }
+        public List<SelectListItem>? AccountTypeList { get; set; }
+
     }
 }

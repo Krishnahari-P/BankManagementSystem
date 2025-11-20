@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace BankManagementSystem.Entity.Models
@@ -39,7 +40,8 @@ namespace BankManagementSystem.Entity.Models
         public String? CustomerImageURL { get; set; }
         public string Status { get; set; } = "Pending";
         public ApplicationUser? ApplicationUserSet { get; set; } 
-        public ApplicationUser? ApprovedByUserSet { get; set; } 
+        public ApplicationUser? ApprovedByUserSet { get; set; }
+        [JsonIgnore]
         public ICollection<Account>? Accounts { get; set; }
         [NotMapped]
         public IFormFile? Image { get; set; }

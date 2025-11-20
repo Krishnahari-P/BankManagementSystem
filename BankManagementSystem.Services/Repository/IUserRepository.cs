@@ -11,7 +11,6 @@ namespace BankManagementSystem.Services.Repository
     public interface IUserRepository
     {
         Task<Result<UserResponse>> Authenticate(UserRequest request);
-        Task<Result<UserResponse>> Register(UserRequest request);
         Task<bool> IsAValidUser(string username, string password);
     }
 }

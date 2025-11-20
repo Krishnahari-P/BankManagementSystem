@@ -1,5 +1,6 @@
 ﻿using BankManagementSystem.Entity.Models;
 using BankManagementSystem.Services.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -8,6 +9,7 @@ namespace BankManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin,Manager")]
     public class AccountTypeController : ControllerBase
     {
         private readonly IAccountTypeRepository _accountTypeRepository;

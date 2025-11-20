@@ -19,33 +19,70 @@ namespace BankManagementSystem.Services.Repository
 
         public async Task AddAccountTypeAsync(AccountType accountType)
         {
-            _context.AccountTypeSet.Add(accountType);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.AccountTypeSet.Add(accountType);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task DeleteAccountTypeAsync(int id)
         {
-            var accountType = await _context.AccountTypeSet.FindAsync(id);
-            _context.AccountTypeSet.Remove(accountType);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var accountType = await _context.AccountTypeSet.FindAsync(id);
+                _context.AccountTypeSet.Remove(accountType);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task<List<AccountType>> GetAllAccountTypesAsync()
         {
-            var accountTypeList = await _context.AccountTypeSet.ToListAsync();
-            return accountTypeList;
+            try
+            {
+                var accountTypeList = await _context.AccountTypeSet.ToListAsync();
+                return accountTypeList;
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+
+            }
         }
 
         public async Task<AccountType> GetAccountTypeByIdAsync(int id)
         {
-            var accountType = await _context.AccountTypeSet.FindAsync(id);
-            return accountType ?? throw new NotImplementedException();
+            try
+            {
+                var accountType = await _context.AccountTypeSet.FindAsync(id);
+                return accountType ?? throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task UpdateAccountTypeAsync(AccountType accountType)
         {
-            _context.AccountTypeSet.Update(accountType);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.AccountTypeSet.Update(accountType);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
     }
 }

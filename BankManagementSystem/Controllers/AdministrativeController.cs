@@ -44,9 +44,8 @@ namespace BankManagementSystem.Controllers
             }
             customer.Status = "Approved";
             customer.ApprovalDate = DateTime.Now.Date;
-            //customer.ApprovedByUserId = User.FindFirst("UserId")?.Value;
+            customer.ApprovedByUserId = User.FindFirst("UserId")?.Value;
             await _customerRepository.UpdateCustomerAsync(customer);
-
             return Ok(new { Message = "Customer approved successfully." });
         }
         [HttpPut("RejectCustomer")]
@@ -101,7 +100,15 @@ namespace BankManagementSystem.Controllers
             customer.ApplicationUserID = user.Id;
             await _customerRepository.UpdateCustomerAsync(customer);
 
-            return Ok(new { Message = "Customer account created successfully.", Username = username, TemporaryPassword = password });
+            var response = new UserResponse
+            {
+                Id=user.Id,
+                UserName=username,
+                TemporaryPassword= password,
+            };
+
+            //return Ok(new { Message = "Customer account created successfully.", Username = username, TemporaryPassword = password });
+            return Ok(response);
         }
         #endregion
 
@@ -257,7 +264,8 @@ namespace BankManagementSystem.Controllers
                 EmployeeName = request.EmployeeName,
                 Phone = request.Phone,
                 JobTitle = request.JobTitle,
-                HiredDate = DateTime.Now.Date
+                HiredDate = DateTime.Now.Date,
+                Status="Active"
             };
 
             await _employeeRepository.AddEmployeeAsync(employee);

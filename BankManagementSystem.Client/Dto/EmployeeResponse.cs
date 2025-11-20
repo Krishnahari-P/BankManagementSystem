@@ -11,5 +11,6 @@ namespace BankManagementSystem.Client.Dto
         public String Phone { get; set; }
         public String JobTitle { get; set; }
         public DateTime HiredDate { get; set; }
+        public string? Status { get; set; }
     }
 }

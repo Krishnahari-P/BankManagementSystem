@@ -47,38 +47,5 @@ namespace BankManagementSystem.Services.Repository
             var user = await _userManager.FindByNameAsync(username);
             return await _userManager.CheckPasswordAsync(user, password);
         }
-        public async Task<Result<UserResponse>> Register(UserRequest request)
-        {
-            Result<UserResponse> response = new();
-
-            ApplicationUser user = new ApplicationUser
-            {
-                UserName = request.UserName,
-                Email = request.UserName,
-                IsActive = true
-            };
-
-            var result = await _userManager.CreateAsync(user, request.Password);
-
-            if (result.Succeeded)
-            {
-                response.Response = new UserResponse
-                {
-                    Id = user.Id,
-                    UserName = user.UserName
-                };
-            }
-            else
-            {
-                foreach (var err in result.Errors)
-                {
-                    response.Errors.Add(new Errors { ErrorCode = "102", ErrorMessage = err.Description });
-                }
-            }
-
-            return response;
-        }
-
-
     }
 }

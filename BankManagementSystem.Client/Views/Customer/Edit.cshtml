@@ -1,77 +1,172 @@
 ﻿@model BankManagementSystem.Client.Dto.CustomerResponse
-
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<div class="container mt-3 mb-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-11">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center py-3" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+                    <h3 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Edit Customer Information</h3>
+                    <small class="mb-0">Update customer details and approval status</small>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        <input asp-for="CustomerId" type="hidden" class="form-control" />
+                        <input asp-for="ApplicationUserID" type="hidden" class="form-control" />
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input asp-for="CustomerId" type="hidden" class="form-control" />
-            <input asp-for="ApplicationUserID" type="hidden" class="form-control" />          
-            <div class="form-group">
-                <label asp-for="CustomerName" class="control-label"></label>
-                <input asp-for="CustomerName" class="form-control" />
-                <span asp-validation-for="CustomerName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateOfBirth" class="control-label"></label>
-                <input asp-for="DateOfBirth" class="form-control" type="date" id="dobInput" />
-                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Occupation" class="control-label"></label>
-                <input asp-for="Occupation" class="form-control" />
-                <span asp-validation-for="Occupation" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control"  />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>           
-            <div class="form-group">
-                <label asp-for="ApprovalDate" class="control-label"></label>
-                <input asp-for="ApprovalDate" class="form-control" type="date" id="approvalDateInput" />
-                <span asp-validation-for="ApprovalDate" class="text-danger"></span>
-            </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="CustomerName" class="form-label fw-bold">
+                                    <i class="bi bi-person me-1"></i>Full Name
+                                </label>
+                                <input asp-for="CustomerName" class="form-control" placeholder="Enter full name" />
+                                <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                            </div>
 
-            <div class="form-group">
-                <label asp-for="AadharNumber" class="control-label"></label>
-                <input asp-for="AadharNumber" class="form-control" />
-                <span asp-validation-for="AadharNumber" class="text-danger"></span>
+                            <div class="col-md-6">
+                                <label asp-for="DateOfBirth" class="form-label fw-bold">
+                                    <i class="bi bi-calendar-event me-1"></i>Date of Birth
+                                </label>
+                                <input asp-for="DateOfBirth" class="form-control" type="date" id="dobInput" />
+                                <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Occupation" class="form-label fw-bold">
+                                    <i class="bi bi-briefcase me-1"></i>Occupation
+                                </label>
+                                <input asp-for="Occupation" class="form-control" placeholder="Enter occupation" />
+                                <span asp-validation-for="Occupation" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label fw-bold">
+                                    <i class="bi bi-telephone me-1"></i>Phone Number
+                                </label>
+                                <input asp-for="Phone" class="form-control" placeholder="Enter phone number" />
+                                <span asp-validation-for="Phone" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="AadharNumber" class="form-label fw-bold">
+                                    <i class="bi bi-card-text me-1"></i>Aadhar Number
+                                </label>
+                                <input asp-for="AadharNumber" class="form-control" placeholder="Enter 12-digit Aadhar" />
+                                <span asp-validation-for="AadharNumber" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="PAN" class="form-label fw-bold">
+                                    <i class="bi bi-credit-card me-1"></i>PAN Number
+                                </label>
+                                <input asp-for="PAN" class="form-control" placeholder="Enter PAN number" style="text-transform: uppercase;" />
+                                <span asp-validation-for="PAN" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Status" class="form-label fw-bold">
+                                    <i class="bi bi-check-circle me-1"></i>Approval Status
+                                </label>
+                                <select asp-for="Status" class="form-select" id="Status">
+                                    <option value="">-- Select Status --</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="ApprovalDate" class="form-label fw-bold">
+                                    <i class="bi bi-calendar-check me-1"></i>Approval Date
+                                </label>
+                                <input asp-for="ApprovalDate" class="form-control" type="date" id="approvalDateInput" />
+                                <span asp-validation-for="ApprovalDate" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="d-grid gap-2 mt-2">
+                                    <button type="submit" class="btn btn-custom btn-lg py-2">
+                                        <i class="bi bi-save me-2"></i>Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light text-center py-2">
+                    <a asp-action="Index" class="text-decoration-none">
+                        <i class="bi bi-arrow-left me-1"></i>Back to List
+                    </a>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="PAN" class="control-label"></label>
-                <input asp-for="PAN" class="form-control" />
-                <span asp-validation-for="PAN" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
         $(document).ready(function () {
             const today = new Date().toISOString().split('T')[0];
             $('#dobInput').attr('max', today);
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            const today = new Date().toISOString().split('T')[0];
             $('#approvalDateInput').attr('max', today);
+            $('#Status').change(function () {
+                const status = $(this).val();
+                if (status === 'Pending') {
+                    $('#approvalDateInput').val('');
+                } else if (status === 'Rejected') {
+                    $('#approvalDateInput').val(today);
+                }
+            });
+            $('#Status').trigger('change');
         });
     </script>
 }
+
+<style>
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #2a5298;
+        box-shadow: 0 0 0 0.2rem rgba(42, 82, 152, 0.25);
+    }
+
+    .btn-custom {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border: none;
+        color: white;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.4);
+            color: white;
+        }
+
+    .form-label {
+        color: #495057;
+        margin-bottom: 0.3rem;
+        font-size: 0.9rem;
+    }
+
+    .form-control,
+    .form-select {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .card-body {
+        max-height: calc(100vh - 250px);
+        overflow-y: auto;
+    }
+</style>
