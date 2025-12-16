@@ -1,5 +1,5 @@
 ﻿<ul class="navbar-nav ms-auto align-items-center">
-    @if (User.Identity.IsAuthenticated)
+    @if (User?.Identity != null&&User.Identity.IsAuthenticated)
     {
         <li class="nav-item me-2">
             <a class="nav-link px-3 py-2 rounded text-white bg-primary fw-semibold"

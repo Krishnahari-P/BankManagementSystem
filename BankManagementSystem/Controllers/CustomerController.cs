@@ -41,7 +41,8 @@ namespace BankManagementSystem.Controllers
                 DateOfBirth=c.DateOfBirth,
                 Status = c.Status,
                 ApprovalDate = c.ApprovalDate,
-                ApprovedByName = c.ApprovedByUserSet != null ? c.ApprovedByUserSet.UserName : "—"
+                ApprovedByName = c.ApprovedByUserSet != null ? c.ApprovedByUserSet.UserName : "—",
+                ApprovedByUserId=c.ApprovedByUserId
             }).ToList();
 
             return Ok(customerResponses);
@@ -65,7 +66,23 @@ namespace BankManagementSystem.Controllers
             {
                 return NotFound();
             }
-            return Ok(customer);
+
+            var customerResponses = customer.Select(c => new Customer
+            {
+                CustomerId = c.CustomerId,
+                CustomerName = c.CustomerName,
+                Phone = c.Phone,
+                AadharNumber = c.AadharNumber,
+                PAN = c.PAN,
+                Occupation = c.Occupation,
+                DateOfBirth = c.DateOfBirth,
+                Status = c.Status,
+                ApprovalDate = c.ApprovalDate,
+                ApprovedByName = c.ApprovedByUserSet != null ? c.ApprovedByUserSet.UserName : "—",
+                ApprovedByUserId = c.ApprovedByUserId
+            }).ToList();
+
+            return Ok(customerResponses);
         }
 
         [HttpPost("AddCustomer")]
@@ -78,8 +95,9 @@ namespace BankManagementSystem.Controllers
         [HttpPut("UpdateCustomer")]
         public async Task<IActionResult> UpdateCustomer([FromBody] Customer customer)
         {
+            customer.ApprovedByUserId = User.FindFirst("UserId")?.Value;
             await _customerRepository.UpdateCustomerAsync(customer);
-            return Ok();
+            return Ok(customer);
         }
 
         [HttpDelete("DeleteCustomer")]
@@ -91,6 +109,7 @@ namespace BankManagementSystem.Controllers
         #endregion
         #region Register as a customer
         [HttpPost("Register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] CustomerRegistrationRequest model)
         {
             if (!ModelState.IsValid)
@@ -109,7 +128,7 @@ namespace BankManagementSystem.Controllers
             var customer = new Customer
             {
                 CustomerName = model.CustomerName,
-                DateOfBirth = model.DateOfBirth.Value,
+                DateOfBirth = model.DateOfBirth.Date,
                 Occupation = model.Occupation,
                 Phone = model.Phone,
                 AadharNumber = model.AadharNumber,

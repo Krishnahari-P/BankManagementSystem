@@ -56,8 +56,17 @@ namespace BankManagementSystem.Client.Controllers
         }
 
 
-        public async Task<ActionResult> Create()
+        public async Task<IActionResult> Create()
         {
+            var customerId = int.Parse(User.FindFirst("CustomerId")?.Value ?? "0");
+            if (customerId == 0)
+                return BadRequest("Invalid or missing customer information.");
+            var customer = await _client.GetAsync<CustomerResponse>($"{ApiConstant.GetCustomerById}?id={customerId}");
+            if (customer.Status == "Rejected")
+            {
+                _nToastNotify.AddErrorToastMessage("Your status is set to rejected. Contact Manager");
+                return RedirectToAction("Index", "Dashboard");
+            }
             var account = new AccountRequest();
             account.AccountTypeList=await GetAccountTypeList();
             return View(account);
@@ -68,9 +77,7 @@ namespace BankManagementSystem.Client.Controllers
         {
             try
             {
-                var customerId = int.Parse(User.FindFirst("CustomerId")?.Value ?? "0");
-                if (customerId == 0)
-                    return BadRequest("Invalid or missing customer information.");
+                var customerId = int.Parse(User.FindFirst("CustomerId")?.Value ?? "0");               
                 model.CustomerId = customerId;
                 var response = await _client.PostAsync<object>(ApiConstant.RequestAccount, model);
                 _nToastNotify.AddSuccessToastMessage("Account request submitted successfully!");

@@ -5,9 +5,9 @@ namespace BankManagementSystem.Client.ViewModels
     public class LoginViewModel
     {
         [EmailAddress]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 }

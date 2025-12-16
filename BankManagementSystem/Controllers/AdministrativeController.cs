@@ -57,7 +57,8 @@ namespace BankManagementSystem.Controllers
                 return NotFound("Customer not found");
             }
             customer.Status = "Rejected";
-            customer.ApprovalDate = DateTime.Now;
+            customer.ApprovalDate = DateTime.Now.Date;
+            customer.ApprovedByUserId = User.FindFirst("UserId")?.Value;
             await _customerRepository.UpdateCustomerAsync(customer);
 
             return Ok(new { Message = "Customer Rejected" });
@@ -277,6 +278,89 @@ namespace BankManagementSystem.Controllers
                 TemporaryPassword = password,
                 StaffCode = staffCode
             });
+        }
+
+        #endregion
+
+        #region BlockCustomer
+        [HttpPost("BlockCustomer")]
+        public async Task<IActionResult> BlockCustomer(int id)
+        {
+            var customer = await _customerRepository.GetCustomerByIdAsync(id);
+            if (customer == null)
+            {
+                return NotFound("Customer not found");
+            }
+
+            if (string.IsNullOrEmpty(customer.ApplicationUserID))
+            {
+                return BadRequest("Customer does not have a login account.");
+            }
+
+            var user = await _userManager.FindByIdAsync(customer.ApplicationUserID);
+            if (user == null)
+            {
+                return NotFound("User account not found.");
+            }
+
+            user.IsActive = false;
+            customer.Status = "Blocked";
+        
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            var accounts = await _accountRepository.GetAccountsByCustomerIdAsync(id);
+            foreach (var account in accounts)
+            {
+                account.Status = "Freezed";
+                await _accountRepository.UpdateAccountAsync(account);
+            }
+            return Ok(new { Message = "Customer blocked successfully." });
+        }
+
+        #endregion
+
+        #region UnBlockCustomer
+        [HttpPost("UnBlockCustomer")]
+        public async Task<IActionResult> UnBlockCustomer(int id)
+        {
+            var customer = await _customerRepository.GetCustomerByIdAsync(id);
+            if (customer == null)
+            {
+                return NotFound("Customer not found");
+            }
+
+            if (string.IsNullOrEmpty(customer.ApplicationUserID))
+            {
+                return BadRequest("Customer does not have a login account.");
+            }
+
+            var user = await _userManager.FindByIdAsync(customer.ApplicationUserID);
+            if (user == null)
+            {
+                return NotFound("User account not found.");
+            }
+
+            user.IsActive = true;
+            customer.Status = "Approved";
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            var accounts = await _accountRepository.GetAccountsByCustomerIdAsync(id);
+            foreach (var account in accounts)
+            {
+                account.Status = "Active";
+                await _accountRepository.UpdateAccountAsync(account);
+            }
+
+            return Ok(new { Message = "Customer unblocked successfully." });
         }
 
         #endregion

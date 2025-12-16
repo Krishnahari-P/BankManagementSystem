@@ -14,6 +14,6 @@
         public string? AadharNumber { get; set; }
         public string? PAN { get; set; }
         public string? CustomerImageURL { get; set; }
-        public string Status { get; set; }
+        public string? Status { get; set; }
     }
 }

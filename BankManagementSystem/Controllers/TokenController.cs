@@ -37,7 +37,14 @@ public class TokenController : ControllerBase
         //var user = await _userManager.FindByNameAsync(request.UserName);
         var roles = await _userManager.GetRolesAsync(user);
         var customer = await _customerRepository.GetCustomerByUserIdAsync(user.Id);
-
+        //if (customer == null)
+        //{
+        //    return NotFound("Account not found");
+        //}
+        if (user.IsActive==false)
+        {
+            return BadRequest("Access denied");
+        }
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.UserName),

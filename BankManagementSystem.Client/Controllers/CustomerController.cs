@@ -157,7 +157,7 @@ namespace BankManagementSystem.Client.Controllers
             }
             catch(Exception ex) 
             {
-                _nToastNotify.AddErrorToastMessage("Registration Unsuccessfull");
+                _nToastNotify.AddErrorToastMessage("Registration Unsuccessfull: "+ex.Message);
                 return RedirectToAction("Index", "Home");
             }
         }

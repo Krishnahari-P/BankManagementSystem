@@ -15,11 +15,13 @@ namespace BankManagementSystem.Controllers
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly ICustomerRepository _customerRepository;
 
-        public TransactionController(ITransactionRepository transactionRepository, IAccountRepository accountRepository)
+        public TransactionController(ITransactionRepository transactionRepository, IAccountRepository accountRepository,ICustomerRepository customerRepository)
         {
             _transactionRepository = transactionRepository;
             _accountRepository = accountRepository;
+            _customerRepository = customerRepository;
         }
         #region CRUD
         [HttpGet("GetAllTransactions")]
@@ -166,7 +168,12 @@ namespace BankManagementSystem.Controllers
         [HttpGet("GetTransactionsByCustomerId")]
         public async Task<IActionResult> GetTransactionsByCustomerId(int customerId)
         {
-            var transactions = await _transactionRepository.GetTransactionsByCustomerIdAsync(customerId);
+            var customer = await _customerRepository.GetCustomerByIdAsync(customerId);
+            if (customer.Status == "Rejected")
+            {
+                return NotFound("Customer status is rejected");
+            }
+            var transactions = await _transactionRepository.GetTransactionsByCustomerIdAsync(customerId);           
             if (transactions == null || !transactions.Any())
                 return NotFound("No transactions found for this customer.");
 
@@ -180,24 +187,49 @@ namespace BankManagementSystem.Controllers
         public async Task<IActionResult> Transfer([FromBody] TransferRequest model)
         {
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
 
             var sender = await _accountRepository.GetAccountByIdAsync(model.SenderAccountId);
             if (sender == null)
+            {
                 return NotFound("Sender account not found.");
+            }
 
             if (sender.Status != "Active")
+            {
                 return BadRequest("Sender account must be active to perform transfers.");
+            }
+
+            if (sender.Status == "Freezed")
+            {
+                return BadRequest("Sender account is freezed");
+            }
 
             if (sender.Balance < model.Amount)
+            {
                 return BadRequest("Insufficient balance in sender account.");
 
+            }
             var recipient = await _accountRepository.GetAccountByAccountNumberAsync(model.RecipientAccountNumber);
             if (recipient == null)
+            {
                 return NotFound("Recipient account not found.");
+            }
 
+            if (recipient.Status != "Active")
+            {
+                return BadRequest("Receiver account must be active to perform transfers.");
+            }
+            if (recipient.Status == "Freezed")
+            {
+                return BadRequest("Recipient account is freezed");
+            }
             if (recipient.AccountId == sender.AccountId)
+            {
                 return BadRequest("Sender and recipient accounts cannot be the same.");
+            }
 
             sender.Balance -= model.Amount;
             recipient.Balance += model.Amount;

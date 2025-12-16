@@ -36,6 +36,10 @@ namespace BankManagementSystem.Services.Repository
             try
             {
                 var customer = await _context.CustomerSet.FindAsync(id);
+                if(customer == null)
+                {
+                    throw new Exception("Customer not found");
+                }
                 _context.CustomerSet.Remove(customer);
                 await _context.SaveChangesAsync();
             }
@@ -66,7 +70,7 @@ namespace BankManagementSystem.Services.Repository
             {
                 var customer = await _context.CustomerSet.FindAsync(id);
                 if (customer == null)
-                    return null;
+                    throw new Exception("Customer not found");
                 return customer;
             }
             catch (Exception e)
@@ -112,7 +116,7 @@ namespace BankManagementSystem.Services.Repository
                 var query = _context.CustomerSet.AsQueryable();
                 if (!string.IsNullOrWhiteSpace(customerName))
                 {
-                    query = query.Where(x => x.CustomerName.Contains(customerName));
+                    query = query.Where(x =>x.CustomerName!=null && x.CustomerName.Contains(customerName));
                 }
                 if (!string.IsNullOrWhiteSpace(aadhar))
                 {
@@ -124,9 +128,9 @@ namespace BankManagementSystem.Services.Repository
                 }
                 if (!string.IsNullOrWhiteSpace(phone))
                 {
-                    query = query.Where(x => x.Phone.Contains(phone));
+                    query = query.Where(x =>x.Phone!=null && x.Phone.Contains(phone));
                 }
-                return await query.ToListAsync();
+                return await query.Include(c => c.ApprovedByUserSet).ToListAsync();
             }
             catch (Exception e)
             {

@@ -9,7 +9,7 @@ namespace BankManagementSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,Manager")]
+    [Authorize]
     public class AccountTypeController : ControllerBase
     {
         private readonly IAccountTypeRepository _accountTypeRepository;

@@ -20,8 +20,8 @@ namespace BankManagementSystem.Client.Controllers
         {
             try
             {
-                await _client.PutAsync<object>($"{ApiConstant.ApproveCustomer}?id={id}", null);
-                var accountResponse= await _client.PostAsync<UserResponse>($"{ApiConstant.CreateCustomerAccount}?customerId={id}", null);
+                await _client.PutAsync<object>($"{ApiConstant.ApproveCustomer}?id={id}", new {});
+                var accountResponse= await _client.PostAsync<UserResponse>($"{ApiConstant.CreateCustomerAccount}?customerId={id}", new { });
 
                 return Json (accountResponse);
             }
@@ -41,8 +41,9 @@ namespace BankManagementSystem.Client.Controllers
         {
             try
             {
-                await _client.PutAsync<object>($"{ApiConstant.RejectCustomer}?id={id}", null);
-                _nToastNotify.AddErrorToastMessage("Rejected customer request");
+                var response=await _client.PutAsync<object>($"{ApiConstant.RejectCustomer}?id={id}", new { });
+                _nToastNotify.AddAlertToastMessage("Rejected uccessfully");
+                return Json(response);
             }
             catch (HttpRequestException ex)
             {
@@ -61,7 +62,7 @@ namespace BankManagementSystem.Client.Controllers
         {
             try
             {
-                var response=await _client.PutAsync<Object>($"{ApiConstant.ApproveAccount}?accountId={accountId}",null);
+                var response=await _client.PutAsync<Object>($"{ApiConstant.ApproveAccount}?accountId={accountId}", new { });
                 _nToastNotify.AddSuccessToastMessage("Account request approved successfully");
             }
             catch (HttpRequestException ex)
@@ -81,7 +82,7 @@ namespace BankManagementSystem.Client.Controllers
         {
             try
             {
-                var response=await _client.PutAsync<Object>($"{ApiConstant.RejectAccount}?accountId={accountId}",null);
+                var response=await _client.PutAsync<Object>($"{ApiConstant.RejectAccount}?accountId={accountId}", new { });
                 _nToastNotify.AddSuccessToastMessage("Account request rejected successfully");
             }
             catch (HttpRequestException ex)
@@ -96,13 +97,53 @@ namespace BankManagementSystem.Client.Controllers
             }
             return RedirectToAction("Index", "BankAccount");
         }
+        [HttpPost]
+        public async Task<IActionResult> BlockCustomer(int customerId)
+        {
+            try
+            {
+                await _client.PostAsync<Object>($"{ApiConstant.BlockCustomer}?id={customerId}", new { });
+                _nToastNotify.AddSuccessToastMessage("Customer blocked successfully");
+            }
+            catch (HttpRequestException ex)
+            {
+                _nToastNotify.AddErrorToastMessage($"Request error: {ex.Message}");
+
+            }
+            catch (Exception ex)
+            {
+                _nToastNotify.AddErrorToastMessage($"Unexpected error: {ex.Message}");
+
+            }
+            return RedirectToAction("Index", "Customer");
+        }
+        [HttpPost]
+        public async Task<IActionResult> UnBlockCustomer(int customerId)
+        {
+            try
+            {
+                await _client.PostAsync<Object>($"{ApiConstant.UnBlockCustomer}?id={customerId}", new { });
+                _nToastNotify.AddSuccessToastMessage("Customer unblocked successfully");
+            }
+            catch (HttpRequestException ex)
+            {
+                _nToastNotify.AddErrorToastMessage($"Request error: {ex.Message}");
+
+            }
+            catch (Exception ex)
+            {
+                _nToastNotify.AddErrorToastMessage($"Unexpected error: {ex.Message}");
+
+            }
+            return RedirectToAction("Index", "Customer");
+        }
 
         [HttpPost]
         public async Task<IActionResult> ApproveDeposit(int transactionId)
         {
             try
             {
-                await _client.PutAsync<object>($"{ApiConstant.ApproveDeposit}?transactionId={transactionId}", null);
+                await _client.PutAsync<object>($"{ApiConstant.ApproveDeposit}?transactionId={transactionId}", new { });
                 _nToastNotify.AddSuccessToastMessage("Deposit approved successfully.");
             }
             catch (HttpRequestException ex)
@@ -121,7 +162,7 @@ namespace BankManagementSystem.Client.Controllers
         {
             try
             {
-                await _client.PutAsync<object>($"{ApiConstant.ApproveWithdraw}?transactionId={transactionId}", null);
+                await _client.PutAsync<object>($"{ApiConstant.ApproveWithdraw}?transactionId={transactionId}", new { });
                 _nToastNotify.AddSuccessToastMessage("Withdraw approved successfully.");
             }
             catch (HttpRequestException ex)

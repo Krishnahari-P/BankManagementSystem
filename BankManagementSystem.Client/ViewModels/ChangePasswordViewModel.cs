@@ -6,13 +6,13 @@ namespace BankManagementSystem.Client.ViewModels
     {
         [Required]
         [DataType(DataType.Password)]
-        public string OldPassword { get; set; }
+        public string? OldPassword { get; set; }
         [Required]
         [DataType(DataType.Password)]
-        public string NewPassword { get; set; }
+        public string? NewPassword { get; set; }
         [Required]
         [DataType(DataType.Password)]
         [Compare("NewPassword", ErrorMessage = "Password Confirmation failed due to mismatch")]
-        public string ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
     }
 }

@@ -106,6 +106,12 @@ namespace BankManagementSystem.Client.Controllers
         public async Task<IActionResult> Deposit()
         {
             var customerId = int.Parse(User.FindFirst("CustomerId")?.Value ?? "0");
+            var customer=await _client.GetAsync<CustomerResponse>($"{ApiConstant.GetCustomerById}?id={customerId}");
+            if (customer.Status == "Rejected")
+            {
+                _nToastNotify.AddErrorToastMessage("Your status is set to rejected. Contact Manager");
+                return RedirectToAction("Index","Dashboard");
+            }
             var accounts = await _client.GetAsync<List<AccountResponse>>(
                 $"{ApiConstant.GetAccountsByCustomer}?customerId={customerId}"
             );
@@ -128,12 +134,12 @@ namespace BankManagementSystem.Client.Controllers
                 _nToastNotify.AddSuccessToastMessage("Deposit request submitted");
                 return RedirectToAction("Deposit");
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 _nToastNotify.AddErrorToastMessage("Deposit request submission failed");
                 return RedirectToAction("Deposit");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _nToastNotify.AddErrorToastMessage("Deposit request submission failed");
                 return RedirectToAction("Deposit");
@@ -147,6 +153,12 @@ namespace BankManagementSystem.Client.Controllers
         public async Task<IActionResult> Withdraw()
         {
             var customerId = int.Parse(User.FindFirst("CustomerId")?.Value ?? "0");
+            var customer = await _client.GetAsync<CustomerResponse>($"{ApiConstant.GetCustomerById}?id={customerId}");
+            if (customer.Status == "Rejected")
+            {
+                _nToastNotify.AddErrorToastMessage("Your status is set to rejected. Contact Manager!");
+                return RedirectToAction("Index","Dashboard");
+            }
             var accounts = await _client.GetAsync<List<AccountResponse>>(
                 $"{ApiConstant.GetAccountsByCustomer}?customerId={customerId}"
             );
@@ -170,12 +182,12 @@ namespace BankManagementSystem.Client.Controllers
                 _nToastNotify.AddSuccessToastMessage("Withdraw request submitted");
                 return RedirectToAction("Withdraw");
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 _nToastNotify.AddErrorToastMessage("Withdraw request submission failed");
                 return RedirectToAction("Withdraw");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _nToastNotify.AddErrorToastMessage("Withdraw request submission failed");
                 return RedirectToAction("Withdraw");
@@ -188,6 +200,12 @@ namespace BankManagementSystem.Client.Controllers
         public async Task<IActionResult> Transfer()
         {
             var customerId = int.Parse(User.FindFirst("CustomerId")?.Value ?? "0");
+            var customer = await _client.GetAsync<CustomerResponse>($"{ApiConstant.GetCustomerById}?id={customerId}");
+            if (customer.Status == "Rejected")
+            {
+                _nToastNotify.AddErrorToastMessage("Your status is set to rejected. Contact Manager!");
+                return RedirectToAction("Index","Dashboard");
+            }
             var accounts = await _client.GetAsync<List<AccountResponse>>(
                 $"{ApiConstant.GetAccountsByCustomer}?customerId={customerId}"
             );
@@ -199,7 +217,9 @@ namespace BankManagementSystem.Client.Controllers
         public async Task<IActionResult> Transfer(TransferRequest model)
         {
             if (!ModelState.IsValid)
+            {
                 return View(model);
+            }
 
             try
             {
@@ -207,14 +227,14 @@ namespace BankManagementSystem.Client.Controllers
                 _nToastNotify.AddSuccessToastMessage("Transfer successfull");
                 return RedirectToAction("Transfer");
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException e)
             {
-                _nToastNotify.AddErrorToastMessage("Money transfer failed");
+                _nToastNotify.AddErrorToastMessage("Money transfer failed "+e.Message);
                 return RedirectToAction("Transfer");
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _nToastNotify.AddErrorToastMessage("Money transfer failed");
+                _nToastNotify.AddErrorToastMessage("Money transfer failed "+e.Message);
                 return RedirectToAction("Transfer");
             }
         }
@@ -224,6 +244,12 @@ namespace BankManagementSystem.Client.Controllers
         public async Task<IActionResult> GetTransactionByCustomer()
         {
             var customerId = int.Parse(User.FindFirst("CustomerId")?.Value ?? "0");
+            var customer = await _client.GetAsync<CustomerResponse>($"{ApiConstant.GetCustomerById}?id={customerId}");
+            if (customer.Status == "Rejected")
+            {
+                _nToastNotify.AddErrorToastMessage("Your status is set to rejected. Contact Manager!");
+                return RedirectToAction("Index","Dashboard");
+            }
             var transactions = await _client.GetAsync<List<TransactionResponse>>(
                 $"{ApiConstant.GetTransactionsByCustomerId}?customerId={customerId}"
             );

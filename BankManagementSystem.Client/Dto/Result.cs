@@ -9,7 +9,7 @@
 
     public class Result<T> : Result
     {
-        public T Response { get; set; }
-        public string WarningMessage { get; set; }
+        public T? Response { get; set; }
+        public string? WarningMessage { get; set; }
     }
 }

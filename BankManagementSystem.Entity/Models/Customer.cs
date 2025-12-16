@@ -20,26 +20,28 @@ namespace BankManagementSystem.Entity.Models
         public string? ApplicationUserID { get; set; }
         [Required]
         [StringLength(100)]
-        public String? CustomerName { get; set; }
+        public String CustomerName { get; set; }=String.Empty;
         [Required]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }=DateTime.Now;
         [StringLength(50)]
         public String? Occupation {  get; set; }
         [StringLength(10)]
         [Required]
-        public String? Phone {  get; set; }
+        public String Phone {  get; set; }=String.Empty;
         public String? ApprovedByUserId { get; set; }
         public String? ApprovedByName { get; set; }
         [DataType(DataType.Date)]
-        public DateTime? ApprovalDate {  get; set; }
+        [Required]
+        public DateTime ApprovalDate {  get; set; }
         [StringLength(12)]
         [Required]
-        public String AadharNumber { get; set; }
+        public String AadharNumber { get; set; }=String.Empty;
         [StringLength(10)]
         public String? PAN {  get; set; }
         public String? CustomerImageURL { get; set; }
         public string Status { get; set; } = "Pending";
-        public ApplicationUser? ApplicationUserSet { get; set; } 
+        public ApplicationUser? ApplicationUserSet { get; set; }
+        [JsonIgnore]
         public ApplicationUser? ApprovedByUserSet { get; set; }
         [JsonIgnore]
         public ICollection<Account>? Accounts { get; set; }

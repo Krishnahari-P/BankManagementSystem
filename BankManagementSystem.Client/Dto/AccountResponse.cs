@@ -15,7 +15,7 @@ namespace BankManagementSystem.Client.Dto
         public decimal Balance { get; set; }
         [DataType(DataType.Date)]
         public DateTime CreatedDate { get; set; }
-        public String Status { get; set; }
+        public String? Status { get; set; }
         public AccountTypeResponse? AccountTypeSet { get; set; }
         public List<SelectListItem>? AccountTypeList { get; set; }
 

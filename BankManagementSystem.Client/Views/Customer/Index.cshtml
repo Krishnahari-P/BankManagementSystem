@@ -44,6 +44,7 @@
                 <option value="Pending">Pending</option>
                 <option value="Approved">Approved</option>
                 <option value="Rejected">Rejected</option>
+                <option value="Rejected">Blocked</option>
             </select>
         </div>
         <div class="col-md-3">
@@ -67,7 +68,7 @@
                 <th>PAN</th>
                 <th>Status</th>
                 <th>Approval Date</th>
-                <th>Approved by</th>
+                <th>Approved/Rejected by</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -104,7 +105,7 @@
                             @if (item.Status == "Pending")
                             {
                                 <form class="approve-form" data-id="@item.CustomerId" style="display:inline;">
-                                    <button type="submit" class="btn btn-sm btn-success">
+                                    <button type="submit" class="btn btn-sm btn-success me-1">
                                         <i class="bi bi-check-circle me-1"></i> Approve
                                     </button>
                                 </form>
@@ -113,12 +114,25 @@
                                         <i class="bi bi-x-circle me-1"></i> Reject
                                     </button>
                                 </form>
-
-                            }           
+                            }
+                            @if (item.Status == "Blocked")
+                            {
+                                <form class="unblock-form" data-id="@item.CustomerId" style="display:inline;">
+                                    <i class="UnBlock fa-solid fa-unlock"></i> 
+                                </form>
+                            }
+                            @if (item.Status == "Approved")
+                            {
+                                <form class="block-form" data-id="@item.CustomerId" style="display:inline;">
+                                    <i class="fa-solid fa-lock"></i>
+                                </form>
+                            }
+                          
                             <div class="mt-2">
                                 <a asp-action="Edit" asp-route-id="@item.CustomerId" class="btn btn-outline-success btn-sm me-1">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
+                                
                                 <a href="#" class="Details btn btn-outline-primary btn-sm" data-id="@item.CustomerId">
                                     <i class="fa-solid fa-circle-info"></i>
                                 </a>
@@ -191,6 +205,62 @@
                         $("#myModal .modal-title").text("Error");
                         $("#modalContent").html(`
                             <p class="text-danger">Error rejecting customer.</p>
+                        `);
+                        $("#myModal").modal("show");
+                    }
+                });
+            });
+            $(".block-form").click(function(e) {
+                e.preventDefault();
+                var customerId = $(this).data("id");
+
+                if (!confirm("Are you sure you want to block this customer?")) return;
+
+                $.ajax({
+                    url: `/Administrative/BlockCustomer?customerId=${customerId}`,
+                    type: "POST",
+                    success: function () {
+                        $("#myModal .modal-title").text("Customer Blocked");
+                        $("#modalContent").html(`
+                            <p class="text-danger fw-bold">Customer has been blocked successfully.</p>
+                        `);
+                        $("#myModal").on("hidden.bs.modal", function () {
+                            location.reload();
+                        });
+                        $("#myModal").modal("show");
+                    },
+                    error: function () {
+                        $("#myModal .modal-title").text("Error");
+                        $("#modalContent").html(`
+                            <p class="text-danger">Error in blocking customer.</p>
+                        `);
+                        $("#myModal").modal("show");
+                    }
+                });
+            });
+            $(".unblock-form").click(function(e) {
+                e.preventDefault();
+                var customerId = $(this).data("id");
+
+                if (!confirm("Are you sure you want to unblock this customer?")) return;
+
+                $.ajax({
+                    url: `/Administrative/UnBlockCustomer?customerId=${customerId}`,
+                    type: "POST",
+                    success: function () {
+                        $("#myModal .modal-title").text("Customer Unblocked");
+                        $("#modalContent").html(`
+                            <p class="text-danger fw-bold">Customer has been unblocked successfully.</p>
+                        `);
+                        $("#myModal").on("hidden.bs.modal", function () {
+                            location.reload();
+                        });
+                        $("#myModal").modal("show");
+                    },
+                    error: function () {
+                        $("#myModal .modal-title").text("Error");
+                        $("#modalContent").html(`
+                            <p class="text-danger">Error in unblocking customer.</p>
                         `);
                         $("#myModal").modal("show");
                     }

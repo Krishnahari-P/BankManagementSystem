@@ -83,6 +83,8 @@
         public const string ApproveDeposit = "Administrative/ApproveDeposit";
         public const string ApproveWithdraw = "Administrative/ApproveWithdraw";
         public const string AddEmployee = "Administrative/AddEmployee";
+        public const string BlockCustomer = "Administrative/BlockCustomer";
+        public const string UnBlockCustomer = "Administrative/UnBlockCustomer";
         #endregion
 
     }
